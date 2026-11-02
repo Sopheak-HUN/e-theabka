@@ -436,9 +436,20 @@ function resetTilt() {
 }
 
 .book__face {
+  /* The cover crosses 90° at 44% of the flip with --ease-book, in both directions */
+  --edge-on: calc(var(--dur-book) * 0.44);
+
   display: flex;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  /* Safari ignores backface-visibility for composited children (gold text, SVG
+     filters, the sheen), so each side is also hidden outright once it turns away. */
+  transition: visibility 0s linear var(--edge-on);
+}
+
+.is-open .book__face--front,
+.invitation-stage:not(.is-open) .book__face--back {
+  visibility: hidden;
 }
 
 .book__cover > .book__face {

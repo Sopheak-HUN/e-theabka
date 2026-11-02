@@ -1096,7 +1096,7 @@ function resetTilt() {
 @media (max-width: 767px) {
   .invitation-stage,
   .invitation-stage.is-open {
-    --card-w: min(92vw, 28rem);
+    --card-w: min(98vw, calc(100vw - 0.5rem), 32rem);
     --peek: x 14deg;
     --peek-rest: x 0deg;
     --peel: rotateX(8deg);

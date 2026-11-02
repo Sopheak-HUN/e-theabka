@@ -240,7 +240,7 @@ onBeforeUnmount(() => cleanup?.())
 
 @media (max-width: 767px) {
   .wedding-hero {
-    padding: var(--space-l) var(--space-s);
+    padding: var(--space-l) 0.25rem;
   }
 
   .wedding-hero__table::after {

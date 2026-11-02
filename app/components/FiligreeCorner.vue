@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // Baroque acanthus filigree, drawn for the top-left corner.
 // The second pass mirrors every motif across the diagonal for symmetry.
+withDefaults(defineProps<{ tone?: 'silver' | 'rose' }>(), { tone: 'silver' })
+
 const mirrors = ['', 'matrix(0 1 1 0 0 0)']
 </script>
 
 <template>
-  <svg class="filigree-corner" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+  <svg class="filigree-corner" :class="`filigree-corner--${tone}`" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
     <path class="filigree-corner__line filigree-corner__line--bold" d="M10 64C10 34 34 10 64 10" />
     <g v-for="(m, i) in mirrors" :key="i" :transform="m">
       <path class="filigree-corner__line" d="M64 10C80 8 90 18 84 28 80 34 72 32 72 26 72 22 77 21 78 24" />
@@ -41,6 +43,14 @@ const mirrors = ['', 'matrix(0 1 1 0 0 0)']
 
 .filigree-corner__line--bold {
   stroke-width: 3.4;
+}
+
+.filigree-corner--rose .filigree-corner__fill {
+  fill: url(#kh-rose);
+}
+
+.filigree-corner--rose .filigree-corner__line {
+  stroke: url(#kh-rose);
 }
 
 .filigree-corner__gold {

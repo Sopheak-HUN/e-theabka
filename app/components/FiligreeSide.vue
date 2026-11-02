@@ -1,10 +1,12 @@
 <script setup lang="ts">
 // Vertical filigree for the middle of the left/right edges, mirrored top to bottom.
+withDefaults(defineProps<{ tone?: 'silver' | 'rose' }>(), { tone: 'silver' })
+
 const halves = ['', 'matrix(1 0 0 -1 0 180)']
 </script>
 
 <template>
-  <svg class="filigree-side" viewBox="0 0 40 180" aria-hidden="true" focusable="false">
+  <svg class="filigree-side" :class="`filigree-side--${tone}`" viewBox="0 0 40 180" aria-hidden="true" focusable="false">
     <g v-for="(h, i) in halves" :key="i" :transform="h">
       <path class="filigree-side__line" d="M20 2C6 24 34 42 20 66 14 76 16 84 20 86" />
       <path class="filigree-side__fill" d="M22 30C32 24 38 14 36 4 28 10 22 20 22 30Z" />
@@ -30,6 +32,14 @@ const halves = ['', 'matrix(1 0 0 -1 0 180)']
   stroke: url(#kh-silver);
   stroke-width: 1.6;
   stroke-linecap: round;
+}
+
+.filigree-side--rose .filigree-side__fill {
+  fill: url(#kh-rose);
+}
+
+.filigree-side--rose .filigree-side__line {
+  stroke: url(#kh-rose);
 }
 
 .filigree-side__gold {

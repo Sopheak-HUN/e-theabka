@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Shared SVG gradients referenced by every ornament via url(#kh-gold…) / url(#kh-silver).
+// Shared SVG gradients referenced by every ornament via url(#kh-gold…), url(#kh-silver) or url(#kh-rose).
 const svg = ref<SVGSVGElement | null>(null)
 
 onMounted(() => {
@@ -57,6 +57,19 @@ onMounted(() => {
         <stop offset=".55" stop-color="#E4E6DE" />
         <stop offset=".7" stop-color="#A3A99D" />
         <stop offset="1" stop-color="#7C8276" />
+      </linearGradient>
+
+      <linearGradient
+        id="kh-rose"
+        gradientUnits="userSpaceOnUse"
+        x1="0" y1="0" x2="160" y2="160"
+        spreadMethod="reflect"
+      >
+        <stop offset="0" stop-color="#B98582" />
+        <stop offset=".4" stop-color="#D9AAA5" />
+        <stop offset=".55" stop-color="#F3D9D4" />
+        <stop offset=".7" stop-color="#D4A5A0" />
+        <stop offset="1" stop-color="#B07C78" />
       </linearGradient>
     </defs>
   </svg>

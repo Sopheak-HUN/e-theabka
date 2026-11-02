@@ -19,12 +19,14 @@
   --rose-deep: #BF8F8A;
   --silver: #A3A99D;
   --ink: #45473F;
+  --gold-ink: #8A6A2E;
 
   /* Typography */
   --font-khmer: "Noto Serif Khmer", "Battambang", serif;
   --font-khmer-display: "Moul", "Noto Serif Khmer", serif;
   --font-khmer-light: "Moulpali", "Moul", "Noto Serif Khmer", serif;
   --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-script: "Pinyon Script", "Cormorant Garamond", cursive;
 
   /* Spacing */
   --space-xs: clamp(0.375rem, 0.3rem + 0.3vw, 0.5rem);
@@ -38,7 +40,9 @@
   --dur-float: 8s;
   --dur-shimmer: 7s;
   --dur-glow: 9s;
+  --dur-book: 1.4s;
   --ease-silk: cubic-bezier(0.22, 0.68, 0.16, 1);
+  --ease-book: cubic-bezier(0.6, 0.05, 0.25, 1);
 
   /* Gold foil */
   --gold-foil: linear-gradient(105deg,

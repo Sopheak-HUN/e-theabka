@@ -21,6 +21,36 @@ let canTilt = false
 let reducedMotion = false
 let stackedLayout: MediaQueryList | undefined
 let lowerTimer: ReturnType<typeof setTimeout> | undefined
+let glideFrame = 0
+// Where the closed card sat before opening (phones), so closing can glide back to it.
+let closedBookTop = 0
+let closedScroll = 0
+
+const bookTop = () => book.value!.getBoundingClientRect().top + window.scrollY
+const bookDuration = () =>
+  reducedMotion ? 0 : parseFloat(getComputedStyle(stage.value!).getPropertyValue('--dur-book')) * 1000
+
+// Our own eased scroll, so the page moves in step with the cover rather than
+// at whatever speed the browser picks for "smooth". A touch or wheel cancels it.
+function glideTo(top: number, duration: number) {
+  cancelAnimationFrame(glideFrame)
+  const from = window.scrollY
+  const distance = top - from
+  if (!duration || Math.abs(distance) < 1) {
+    window.scrollTo({ top, behavior: 'instant' })
+    return
+  }
+  const start = performance.now()
+  const step = (now: number) => {
+    const t = Math.min(1, (now - start) / duration)
+    const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2
+    window.scrollTo({ top: from + distance * eased, behavior: 'instant' })
+    if (t < 1) glideFrame = requestAnimationFrame(step)
+  }
+  glideFrame = requestAnimationFrame(step)
+}
+
+const cancelGlide = () => cancelAnimationFrame(glideFrame)
 
 // Change the reserved room without the card visibly jumping: measure where the
 // book sits before and after, then scroll by the difference. Nothing here animates
@@ -30,6 +60,7 @@ async function setRaised(value: boolean) {
   stage.value.style.setProperty('--book-h', `${book.value.offsetHeight}px`)
   const before = book.value.getBoundingClientRect().bottom
   raised.value = value
+  if (!value) stage.value.style.removeProperty('padding-bottom')
   await nextTick()
   const after = book.value.getBoundingClientRect().bottom
   window.scrollBy({ top: after - before, behavior: 'instant' })
@@ -38,22 +69,32 @@ async function setRaised(value: boolean) {
 async function toggle() {
   resetTilt()
   clearTimeout(lowerTimer)
+  cancelGlide()
 
-  if (!stackedLayout?.matches) {
+  if (!stackedLayout?.matches || !book.value || !stage.value) {
     open.value = !open.value
     return
   }
 
   if (!open.value) {
     // Phones: make room above first, then flip the cover up and glide to the top page.
-    if (!raised.value) await setRaised(true)
+    if (!raised.value) {
+      closedBookTop = bookTop()
+      closedScroll = window.scrollY
+      await setRaised(true)
+    }
     open.value = true
-    stage.value?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
+    glideTo(stage.value.getBoundingClientRect().top + window.scrollY, bookDuration() * 0.8)
   } else {
     open.value = false
-    // Give the room back once the cover has closed.
-    const duration = reducedMotion ? 0 : parseFloat(getComputedStyle(stage.value!).getPropertyValue('--dur-book')) * 1000
-    lowerTimer = setTimeout(() => setRaised(false), duration)
+    // While the cover folds down, glide so the card ends exactly where it started.
+    // If the page is too short to scroll that far, add temporary room at the bottom.
+    const target = bookTop() - (closedBookTop - closedScroll)
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+    if (target > maxScroll) stage.value.style.paddingBottom = `${Math.ceil(target - maxScroll)}px`
+    glideTo(target, bookDuration() * 0.9)
+    // Then give the room back; the card is already in place, so nothing moves.
+    lowerTimer = setTimeout(() => setRaised(false), bookDuration())
   }
 }
 
@@ -66,11 +107,16 @@ onMounted(() => {
   canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reducedMotion
   stackedLayout = window.matchMedia('(max-width: 767px)')
   window.addEventListener('keydown', onKeydown)
+  window.addEventListener('touchstart', cancelGlide, { passive: true })
+  window.addEventListener('wheel', cancelGlide, { passive: true })
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeydown)
+  window.removeEventListener('touchstart', cancelGlide)
+  window.removeEventListener('wheel', cancelGlide)
   clearTimeout(lowerTimer)
+  cancelGlide()
 })
 
 // Gentle pointer-follow tilt plus a moving light sheen, while the book is closed.

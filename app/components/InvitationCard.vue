@@ -12,25 +12,48 @@ const programme = [
 ]
 
 const open = ref(false)
+// Phones only: the book has room reserved above it for the upper page.
+const raised = ref(false)
 const stage = ref<HTMLElement | null>(null)
 const book = ref<HTMLElement | null>(null)
 
 let canTilt = false
 let reducedMotion = false
 let stackedLayout: MediaQueryList | undefined
+let lowerTimer: ReturnType<typeof setTimeout> | undefined
 
-function toggle() {
-  open.value = !open.value
+// Change the reserved room without the card visibly jumping: measure where the
+// book sits before and after, then scroll by the difference. Nothing here animates
+// layout, so only the cover flip (a transform) runs per frame.
+async function setRaised(value: boolean) {
+  if (!book.value || !stage.value) return
+  stage.value.style.setProperty('--book-h', `${book.value.offsetHeight}px`)
+  const before = book.value.getBoundingClientRect().bottom
+  raised.value = value
+  await nextTick()
+  const after = book.value.getBoundingClientRect().bottom
+  window.scrollBy({ top: after - before, behavior: 'instant' })
+}
+
+async function toggle() {
   resetTilt()
+  clearTimeout(lowerTimer)
 
-  // On phones the book opens upwards; reserve room for the upper page and bring it into view.
-  if (stackedLayout?.matches && stage.value && book.value) {
-    stage.value.style.setProperty('--book-h', `${book.value.offsetHeight}px`)
-    if (open.value) {
-      setTimeout(() => {
-        stage.value?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
-      }, 250)
-    }
+  if (!stackedLayout?.matches) {
+    open.value = !open.value
+    return
+  }
+
+  if (!open.value) {
+    // Phones: make room above first, then flip the cover up and glide to the top page.
+    if (!raised.value) await setRaised(true)
+    open.value = true
+    stage.value?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
+  } else {
+    open.value = false
+    // Give the room back once the cover has closed.
+    const duration = reducedMotion ? 0 : parseFloat(getComputedStyle(stage.value!).getPropertyValue('--dur-book')) * 1000
+    lowerTimer = setTimeout(() => setRaised(false), duration)
   }
 }
 
@@ -45,7 +68,10 @@ onMounted(() => {
   window.addEventListener('keydown', onKeydown)
 })
 
-onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown)
+  clearTimeout(lowerTimer)
+})
 
 // Gentle pointer-follow tilt plus a moving light sheen, while the book is closed.
 function onPointerMove(event: PointerEvent) {
@@ -69,7 +95,7 @@ function resetTilt() {
 </script>
 
 <template>
-  <div ref="stage" class="invitation-stage" :class="{ 'is-open': open }">
+  <div ref="stage" class="invitation-stage" :class="{ 'is-open': open, 'is-raised': raised }">
     <div class="invitation-glow" aria-hidden="true" />
     <div class="invitation-shadow" aria-hidden="true" />
 
@@ -358,8 +384,7 @@ function resetTilt() {
     scale(var(--lift));
   transition:
     transform 0.8s var(--ease-silk),
-    translate var(--dur-book) var(--ease-book),
-    margin var(--dur-book) var(--ease-book);
+    translate var(--dur-book) var(--ease-book);
 }
 
 .book > * {
@@ -965,6 +990,13 @@ function resetTilt() {
   to { scale: 1.7; opacity: 0; }
 }
 
+/* Phones and touch screens: keep the gold still to save repaints */
+@media (max-width: 767px), (pointer: coarse) {
+  .invitation__title {
+    animation: content-rise 1.2s var(--ease-silk) 1.1s both;
+  }
+}
+
 /* ---------- Phones: the cover flips upwards and the pages stack ---------- */
 @media (max-width: 767px) {
   .invitation-stage,
@@ -991,6 +1023,9 @@ function resetTilt() {
 
   .is-open .book {
     translate: none;
+  }
+
+  .is-raised .book {
     margin-top: var(--book-h, 140cqi);
   }
 

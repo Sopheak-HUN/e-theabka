@@ -187,6 +187,13 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
   to { background-position: 100% 50%; }
 }
 
+/* Phones and touch screens: keep the foil still to save repaints */
+@media (max-width: 767px), (pointer: coarse) {
+  .paper-board__foil {
+    animation: none;
+  }
+}
+
 @media (max-width: 640px) {
   .paper-board__content {
     padding: 13cqi 12cqi 11cqi;

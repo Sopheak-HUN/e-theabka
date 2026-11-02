@@ -118,6 +118,15 @@ const programme = [
   width: 36cqi;
 }
 
+/* Static gold: these cards are blurred, so a shimmer would only cost repaints */
+.backdrop__monogram :deep(.cartouche__fill) {
+  fill: url(#kh-gold);
+}
+
+.backdrop__monogram :deep(.cartouche__line) {
+  stroke: url(#kh-gold);
+}
+
 .backdrop__box {
   width: 70%;
   height: 8cqi;

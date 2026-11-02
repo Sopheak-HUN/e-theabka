@@ -3,7 +3,8 @@
 const svg = ref<SVGSVGElement | null>(null)
 
 onMounted(() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Paused for reduced motion, and on phones/touch where the per-frame repaints cost too much.
+  if (window.matchMedia('(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)').matches) {
     svg.value?.pauseAnimations()
   }
 })

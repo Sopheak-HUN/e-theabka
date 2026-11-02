@@ -39,7 +39,8 @@ let cleanup: (() => void) | undefined
 
 onMounted(() => {
   const el = hero.value
-  if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  // Skipped on phones/touch: updating these variables restyles the whole hero each frame.
+  if (!el || window.matchMedia('(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)').matches) return
 
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
   const target = { x: 0, y: 0, scroll: window.scrollY }

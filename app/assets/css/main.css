@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Wedding invitation design tokens
+------------------------------------------------------------------- */
+:root {
+  /* Palette */
+  --ivory: #F8F3E8;
+  --gold: #C9A45C;
+  --gold-deep: #A88642;
+  --gold-light: #EFDCA9;
+  --emerald: #173D32;
+  --emerald-dark: #102A22;
+  --beige: #E9DDC8;
+  --sage: #6F7B63;
+  --sage-dark: #55604B;
+  --sage-light: #8E987F;
+  --rose: #D8AAA5;
+  --rose-deep: #BF8F8A;
+  --silver: #A3A99D;
+  --ink: #45473F;
+
+  /* Typography */
+  --font-khmer: "Noto Serif Khmer", "Battambang", serif;
+  --font-khmer-display: "Moul", "Noto Serif Khmer", serif;
+  --font-khmer-light: "Moulpali", "Moul", "Noto Serif Khmer", serif;
+  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+
+  /* Spacing */
+  --space-xs: clamp(0.375rem, 0.3rem + 0.3vw, 0.5rem);
+  --space-s: clamp(0.75rem, 0.6rem + 0.6vw, 1rem);
+  --space-m: clamp(1rem, 0.75rem + 1.2vw, 1.75rem);
+  --space-l: clamp(1.5rem, 1rem + 2.4vw, 3rem);
+  --space-xl: clamp(2rem, 1.2rem + 4vw, 5rem);
+
+  /* Motion */
+  --dur-enter: 1.8s;
+  --dur-float: 8s;
+  --dur-shimmer: 7s;
+  --dur-glow: 9s;
+  --ease-silk: cubic-bezier(0.22, 0.68, 0.16, 1);
+
+  /* Gold foil */
+  --gold-foil: linear-gradient(105deg,
+      #8C6A2C 0%, #C9A45C 20%, #F3E2AE 36%, #C9A45C 50%,
+      #A88642 66%, #E6CC8C 82%, #9A7834 100%);
+  --gold-emboss:
+    drop-shadow(0 0.6px 0 rgba(255, 252, 240, 0.85))
+    drop-shadow(0 -0.6px 0 rgba(96, 70, 26, 0.35));
+
+  /* Textures */
+  --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .2 .5 0 0 0 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  --tex-linen: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .018' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .07 0 0 0 0 .03 .9 0 0 0 -.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+}
+
+html {
+  background: var(--beige);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-hero *,
+  .wedding-hero *::before,
+  .wedding-hero *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

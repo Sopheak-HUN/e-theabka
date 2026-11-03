@@ -1,0 +1,16 @@
+// Cloudflare Workers deploy. The share image (nuxt-og-image) reads its fonts through the
+// ASSETS binding, so the static files must be bound under that name.
+// "name" must match the Worker's name in the Cloudflare dashboard.
+{
+  "name": "e-theabka",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2025-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  },
+  "build": {
+    "command": "NITRO_PRESET=cloudflare_module npm run build"
+  }
+}

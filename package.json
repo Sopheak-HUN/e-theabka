@@ -19,6 +19,7 @@
   "devDependencies": {
     "@nuxt/fonts": "^1",
     "@takumi-rs/core": "^2.15.0",
+    "@takumi-rs/wasm": "^2.15.0",
     "nuxt-og-image": "^7.0.7"
   }
 }

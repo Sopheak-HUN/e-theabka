@@ -8,8 +8,8 @@ export default defineNuxtConfig({
   telemetry: false,
   css: ['~/assets/css/main.css'],
   modules: ['@nuxt/fonts', 'nuxt-og-image'],
-  // Link previews need absolute image URLs: set NUXT_SITE_URL to the live address when deploying
-  site: { url: process.env.NUXT_SITE_URL || 'http://localhost:3000' },
+  // Link previews need absolute image URLs. Without a fixed address they use the domain the
+  // page was requested on; set NUXT_SITE_URL at build time to pin one.
   // The share image (app/components/OgImage/Wedding.takumi.vue) only sees fonts loaded here
   fonts: {
     families: [

@@ -147,3 +147,14 @@ html {
   font-size: 1.05em;
   color: var(--gold-deep);
 }
+
+/* Lenis smooth scrolling (app/plugins/smooth-scroll.client.ts). Its stock stylesheet also
+   blocks iframe clicks while smooth, which would freeze the venue map, so only these. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}

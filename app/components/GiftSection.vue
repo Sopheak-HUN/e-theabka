@@ -19,7 +19,7 @@ onBeforeUnmount(() => clearTimeout(resetTimer))
 </script>
 
 <template>
-  <WeddingSection v-if="gift" id="gift" title-km="ចំណងដៃ" title-en="A gift, should you wish">
+  <WeddingSection v-if="gift" id="gift" title-km="ចំណងដៃ" title-en="A gift, should you wish" reveal-content>
     <p class="gift__note" lang="km">
       វត្តមានរបស់លោកអ្នក គឺជាកាដូដ៏មានតម្លៃបំផុតសម្រាប់យើងខ្ញុំ។
       សម្រាប់ភ្ញៀវកិត្តិយសដែលមិនអាចអញ្ជើញមកដល់ ឬប្រាថ្នាផ្ញើចំណងដៃ អាចផ្ញើតាមគណនីខាងក្រោម។

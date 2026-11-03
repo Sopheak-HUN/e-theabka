@@ -30,10 +30,20 @@ const bookTop = () => {
 const bookDuration = () =>
   reducedMotion ? 0 : parseFloat(getComputedStyle(stage.value!).getPropertyValue('--dur-book')) * 1000
 
+// Smooth scrolling from app/plugins/smooth-scroll.client.ts (null for reduced motion)
+const { $lenis: lenis } = useNuxtApp()
+const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
+
 // Our own eased scroll, so the page moves in step with the cover rather than
 // at whatever speed the browser picks for "smooth". A touch or wheel cancels it.
 function glideTo(top: number, duration: number) {
-  cancelAnimationFrame(glideFrame)
+  cancelGlide()
+  if (lenis) {
+    // The page height may have just changed (setRaised); Lenis clamps to its last measure
+    lenis.resize()
+    lenis.scrollTo(top, { duration: duration / 1000, easing: easeInOutCubic, force: true })
+    return
+  }
   const from = window.scrollY
   const distance = top - from
   if (!duration || Math.abs(distance) < 1) {
@@ -43,14 +53,20 @@ function glideTo(top: number, duration: number) {
   const start = performance.now()
   const step = (now: number) => {
     const t = Math.min(1, (now - start) / duration)
-    const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2
-    window.scrollTo({ top: from + distance * eased, behavior: 'instant' })
+    window.scrollTo({ top: from + distance * easeInOutCubic(t), behavior: 'instant' })
     if (t < 1) glideFrame = requestAnimationFrame(step)
   }
   glideFrame = requestAnimationFrame(step)
 }
 
-const cancelGlide = () => cancelAnimationFrame(glideFrame)
+function cancelGlide() {
+  cancelAnimationFrame(glideFrame)
+  // Stopping resets Lenis's animation to where the page is now; a finger then scrolls natively
+  if (lenis?.isScrolling === 'smooth') {
+    lenis.stop()
+    lenis.start()
+  }
+}
 
 // Change the reserved room without the card visibly jumping: measure where the
 // book sits before and after, then scroll by the difference. Nothing here animates
@@ -63,7 +79,12 @@ async function setRaised(value: boolean) {
   if (!value) stage.value.style.removeProperty('padding-bottom')
   await nextTick()
   const after = book.value.getBoundingClientRect().bottom
-  window.scrollBy({ top: after - before, behavior: 'instant' })
+  if (lenis) {
+    lenis.resize()
+    lenis.scrollTo(window.scrollY + after - before, { immediate: true, force: true })
+  } else {
+    window.scrollBy({ top: after - before, behavior: 'instant' })
+  }
 }
 
 async function toggle() {
@@ -108,7 +129,8 @@ onMounted(() => {
   stackedLayout = window.matchMedia('(max-width: 767px)')
   window.addEventListener('keydown', onKeydown)
   window.addEventListener('touchstart', cancelGlide, { passive: true })
-  window.addEventListener('wheel', cancelGlide, { passive: true })
+  // Lenis takes a wheel over by itself; the native glide needs cancelling
+  if (!lenis) window.addEventListener('wheel', cancelGlide, { passive: true })
 })
 
 onBeforeUnmount(() => {

@@ -1,50 +1,11 @@
 <script setup lang="ts">
 // One stop along the table below the hero: a gold-foil Khmer title, an English
 // line in italic, the diamond rule from the invitation, then the section content.
-// The header (and with reveal-content, the content too) rises into place with GSAP the
-// first time the section scrolls into view.
-import { gsap } from 'gsap'
-
-const { revealContent = false } = defineProps<{
-  id: string
-  titleKm: string
-  titleEn: string
-  /** Also reveal the content; off for sections with their own entrance (countdown, gallery) */
-  revealContent?: boolean
-}>()
-
-const section = ref<HTMLElement | null>(null)
-let observer: IntersectionObserver | undefined
-
-onMounted(() => {
-  const el = section.value
-  if (!el || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  // Already on screen at load (a reload part-way down): leave it as is, no flash
-  if (el.getBoundingClientRect().top < window.innerHeight) return
-
-  const header = [...el.querySelectorAll('.wedding-section__header > *')]
-  const content = revealContent ? [...el.children].filter((child) => child.tagName !== 'HEADER') : []
-  gsap.set([...header, ...content], { autoAlpha: 0, y: 24 })
-
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      if (!entry?.isIntersecting) return
-      observer?.disconnect()
-      gsap
-        .timeline({ defaults: { duration: 1, ease: 'power3.out' } })
-        .to(header, { autoAlpha: 1, y: 0, stagger: 0.12, clearProps: 'all' })
-        .to(content, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.15, clearProps: 'all' }, '-=0.6')
-    },
-    { rootMargin: '0px 0px -15% 0px' },
-  )
-  observer.observe(el)
-})
-
-onBeforeUnmount(() => observer?.disconnect())
+defineProps<{ id: string; titleKm: string; titleEn: string }>()
 </script>
 
 <template>
-  <section :id="id" ref="section" class="wedding-section" :aria-labelledby="`${id}-title`">
+  <section :id="id" class="wedding-section" :aria-labelledby="`${id}-title`">
     <header class="wedding-section__header">
       <h2 :id="`${id}-title`" class="wedding-section__title" lang="km">{{ titleKm }}</h2>
       <p class="wedding-section__subtitle">{{ titleEn }}</p>

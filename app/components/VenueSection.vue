@@ -19,7 +19,7 @@ const { weekday, day, month, year } = weddingDate
 </script>
 
 <template>
-  <WeddingSection id="venue" title-km="ទីតាំងកម្មវិធី" title-en="Where we will celebrate" reveal-content>
+  <WeddingSection id="venue" title-km="ទីតាំងកម្មវិធី" title-en="Where we will celebrate">
     <div class="venue">
       <div class="venue__card">
         <InvitationPaper class="venue__paper">

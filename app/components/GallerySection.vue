@@ -21,7 +21,9 @@ onMounted(() => {
       landed.value = true
       observer?.disconnect()
     },
-    { threshold: 0.2 },
+    // As soon as the top of the grid is a little way up the screen. On phones the grid is
+    // taller than the screen, so waiting for a share of it left empty slots while scrolling.
+    { rootMargin: '0px 0px -10% 0px' },
   )
   observer.observe(grid.value)
 })

@@ -10,12 +10,15 @@ export default defineNuxtConfig({
   modules: ['@nuxt/fonts', 'nuxt-og-image'],
   // Link previews need absolute image URLs. Without a fixed address they use the domain the
   // page was requested on; set NUXT_SITE_URL at build time to pin one.
-  // The share image (app/components/OgImage/Wedding.takumi.vue) only sees fonts loaded here
+  // Every font the page and the share image (app/components/OgImage/Wedding.takumi.vue) use,
+  // self-hosted from our own domain. Don't add a Google Fonts <link> as well: it blocks the
+  // first paint and downloads every font a second time.
   fonts: {
     families: [
       { name: 'Moul', weights: [400], subsets: ['khmer', 'latin'], global: true },
-      { name: 'Noto Serif Khmer', weights: [400, 500], subsets: ['khmer', 'latin'], global: true },
-      { name: 'Cormorant Garamond', weights: [400, 500], global: true },
+      { name: 'Moulpali', weights: [400], subsets: ['khmer', 'latin'], global: true },
+      { name: 'Noto Serif Khmer', weights: [400, 500, 600], subsets: ['khmer', 'latin'], global: true },
+      { name: 'Cormorant Garamond', weights: [400, 500, 600], styles: ['normal', 'italic'], global: true },
       { name: 'Pinyon Script', weights: [400], global: true },
     ],
   },
@@ -36,12 +39,6 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', href: '/favicon-32.png', sizes: '32x32' },
         { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Moul&family=Moulpali&family=Noto+Serif+Khmer:wght@400;500;600&family=Pinyon+Script&display=swap',
-        },
       ],
     },
   },

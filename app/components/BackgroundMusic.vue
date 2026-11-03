@@ -1,15 +1,17 @@
 <script setup lang="ts">
 // The song from app/data/wedding.jsonc ("music"), looping quietly behind the page.
-// It tries to start as soon as the page opens. Most browsers block sound until the guest
+// It tries to start once the page has loaded. Most browsers block sound until the guest
 // touches the page, so if that fails it starts on the first tap or key press instead
 // (usually opening the card). The one button pauses and plays it.
+// Nothing is downloaded up front: the song is several MB and would otherwise compete with
+// the invitation for bandwidth on a phone. Playing streams it.
 const music = wedding.music
 
 const audio = ref<HTMLAudioElement | null>(null)
 const button = ref<HTMLButtonElement | null>(null)
 const playing = ref(false)
-// Hidden until the file loads, so a missing song leaves no dead button behind
-const ready = ref(false)
+// Hidden if the file fails to load, so a missing song leaves no dead button behind
+const failed = ref(false)
 // Once the guest pauses, the next tap on the page shouldn't start it again
 let pausedByGuest = false
 // Paused because the tab went into the background, to resume when it comes back
@@ -65,12 +67,17 @@ function onVisibilityChange() {
 onMounted(() => {
   if (!audio.value) return
   audio.value.volume = music?.volume ?? 0.5
-  // The file may have loaded before hydration, when @canplay had no listener yet
-  if (audio.value.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) ready.value = true
   for (const type of gestures) window.addEventListener(type, startOnFirstGesture, { capture: true })
   document.addEventListener('visibilitychange', onVisibilityChange)
-  // Autoplay where the browser allows it; otherwise the first gesture above starts it
-  play().then((started) => started && removeGestureListeners())
+  // Autoplay where the browser allows it, once the page itself has finished loading;
+  // otherwise the first gesture above starts it
+  const tryAutoplay = () => {
+    if (pausedByGuest || !audio.value?.paused) return
+    play().then((started) => started && removeGestureListeners())
+  }
+  const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(tryAutoplay, { timeout: 2000 }) : setTimeout(tryAutoplay, 500))
+  if (document.readyState === 'complete') whenIdle()
+  else window.addEventListener('load', whenIdle, { once: true })
 })
 
 onBeforeUnmount(() => {
@@ -85,13 +92,13 @@ onBeforeUnmount(() => {
       ref="audio"
       :src="music.src"
       loop
-      preload="auto"
-      @canplay="ready = true"
+      preload="none"
+      @error="failed = true"
       @play="playing = true"
       @pause="playing = false"
     />
     <button
-      v-show="ready"
+      v-show="!failed"
       ref="button"
       type="button"
       class="background-music__button"

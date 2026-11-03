@@ -98,7 +98,7 @@ onBeforeUnmount(() => clearTimeout(resetTimer))
   font-weight: 400;
   font-size: clamp(14px, 5.4cqi, 22px);
   line-height: 1.8;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;

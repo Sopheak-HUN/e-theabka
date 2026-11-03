@@ -131,7 +131,7 @@ const year = date.toLocaleDateString('en-GB', { year: 'numeric', timeZone: 'Asia
   font-family: var(--font-khmer-display);
   font-size: clamp(15px, 5cqi, 24px);
   line-height: 1.8;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;

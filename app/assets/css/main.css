@@ -48,6 +48,11 @@
   --gold-foil: linear-gradient(105deg,
       #8C6A2C 0%, #C9A45C 20%, #F3E2AE 36%, #C9A45C 50%,
       #A88642 66%, #E6CC8C 82%, #9A7834 100%);
+  /* Deeper foil for text: the bright foil above lightens to near-ivory and washes out
+     on the paper wherever the shimmer is still (phones), so text tops out at mid-gold */
+  --gold-foil-text: linear-gradient(105deg,
+      #6E5220 0%, #94722F 22%, #B89346 38%, #94722F 52%,
+      #7E6026 70%, #A9853F 86%, #765A24 100%);
   --gold-emboss:
     drop-shadow(0 0.6px 0 rgba(255, 252, 240, 0.85))
     drop-shadow(0 -0.6px 0 rgba(96, 70, 26, 0.35));

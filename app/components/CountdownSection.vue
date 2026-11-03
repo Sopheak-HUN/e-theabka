@@ -208,7 +208,7 @@ const show = (value: number | null) => (value === null ? '··' : toKhmerDigits(
 
 .countdown__glyph {
   display: block;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;

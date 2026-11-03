@@ -2,12 +2,11 @@
 // Invitations lying on the table: a closed folder (cover) or an open spread.
 withDefaults(defineProps<{ variant?: 'cover' | 'spread' }>(), { variant: 'cover' })
 
-const programme = [
-  ['៧:០០', 'ពិធីហែជំនូន'],
-  ['៨:៣០', 'ពិធីកាត់សក់'],
-  ['១០:០០', 'ពិធីសំពះផ្ទឹម'],
-  ['១១:០០', 'ពិធីចងដៃ'],
-]
+// The first few ceremonies from the real programme (these cards are blurred, so four is plenty)
+const programme = wedding.programme
+  .flatMap((day) => day.steps)
+  .slice(0, 4)
+  .map((step) => [step.time, step.km])
 </script>
 
 <template>

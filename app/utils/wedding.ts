@@ -18,6 +18,12 @@ export interface GiftAccount {
   qr?: string
 }
 
+export interface ProgrammeDay {
+  dayKm: string
+  dayEn: string
+  steps: { time: string; period: string; km: string; en: string }[]
+}
+
 interface Person {
   km: string
   en: string
@@ -34,6 +40,7 @@ export interface WeddingDetails {
   timeKm: string
   timeEn: string
   venue: { km: string; en: string; addressKm: string; addressEn: string; mapQuery: string }
+  programme: ProgrammeDay[]
   gallery: GalleryPhoto[]
   gift?: GiftAccount
 }

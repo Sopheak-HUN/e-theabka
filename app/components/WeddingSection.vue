@@ -35,7 +35,7 @@ defineProps<{ id: string; titleKm: string; titleEn: string }>()
   font-weight: 400;
   font-size: clamp(1.35rem, 1rem + 1.6vw, 2.1rem);
   line-height: 1.8;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;

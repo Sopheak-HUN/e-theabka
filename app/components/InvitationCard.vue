@@ -2,19 +2,12 @@
 // Personalise the guest box with ?to=Guest%20Name in the link.
 const guest = useRequestURL().searchParams.get('to') ?? ''
 
-// Sample programme for the inside page — edit times and ceremonies here.
-const programme = [
-  { time: '០៧:០០', km: 'ពិធីហែជំនូន', en: 'Gift procession' },
-  { time: '០៨:៣០', km: 'ពិធីកាត់សក់', en: 'Hair-cutting ceremony' },
-  { time: '១០:០០', km: 'ពិធីសំពះផ្ទឹម', en: 'Blessing of the couple' },
-  { time: '១១:០០', km: 'ពិធីចងដៃ', en: 'Knot-tying ceremony' },
-  { time: '១៧:០០', km: 'ពិធីជប់លៀង', en: 'Wedding reception' },
-]
+// The inside page's order of ceremonies comes from app/data/wedding.jsonc
+const programme = wedding.programme
 
 const open = ref(false)
 // Phones only: the book has room reserved above it for the upper page.
 const raised = ref(false)
-const hasOpened = ref(false)
 const stage = ref<HTMLElement | null>(null)
 const book = ref<HTMLElement | null>(null)
 
@@ -79,18 +72,11 @@ async function toggle() {
   cancelGlide()
 
   if (!stackedLayout?.matches || !book.value || !stage.value) {
-    if (!open.value && !hasOpened.value) hasOpened.value = true
     open.value = !open.value
     return
   }
 
   if (!open.value) {
-    // Mount the inside pages before measuring: they make the book taller, which moves
-    // the closed card, and closing must glide back to where it rests with them mounted.
-    if (!hasOpened.value) {
-      hasOpened.value = true
-      await nextTick()
-    }
     // Phones: make room above first, then flip the cover up and glide to the top page.
     if (!raised.value) {
       closedBookTop = bookTop()
@@ -161,8 +147,9 @@ function resetTilt() {
 
     <div class="invitation-float">
       <div ref="book" class="book" @pointermove="onPointerMove" @pointerleave="resetTilt">
-        <!-- Inside right page: revealed when the cover opens -->
-        <template v-if="hasOpened">
+        <!-- Inside right page: revealed when the cover opens. Both inside pages are in the
+             server HTML on purpose: they are taller than the cover and stretch it to match,
+             so adding them later made the card visibly jump taller. -->
         <section
           id="invitation-inside"
           class="book__page"
@@ -171,40 +158,40 @@ function resetTilt() {
         >
           <InvitationPaper>
             <header class="inside-item" style="--i: 0">
-              <h2 id="programme-title" class="inside__title" lang="km">កម្មវិធីមង្គលការ</h2>
-              <p class="inside__subtitle">Wedding Programme</p>
+              <h2 id="programme-title" class="inside__title" lang="km">របៀបវារៈកម្មវិធី</h2>
+              <p class="inside__subtitle">Order of Ceremonies</p>
             </header>
 
-            <!-- Update both the datetime attributes and the visible text -->
-            <dl class="inside__details inside-item" style="--i: 1">
-              <div>
-                <dt lang="km">កាលបរិច្ឆេទ</dt>
-                <dd><time datetime="2027-01-17">Sunday, 17 January 2027</time></dd>
-              </div>
-              <div>
-                <dt lang="km">ម៉ោង</dt>
-                <dd><time datetime="17:00">5:00 PM</time></dd>
-              </div>
-              <div>
-                <dt lang="km">ទីកន្លែង</dt>
-                <dd><address>Rumdul Ceremony Hall, Phnom Penh</address></dd>
-              </div>
-            </dl>
+            <div class="programme">
+              <section
+                v-for="(day, d) in programme"
+                :key="day.dayKm"
+                class="programme__day inside-item"
+                :style="{ '--i': d + 1 }"
+                :aria-label="day.dayEn"
+              >
+                <h3 class="programme__day-title">
+                  <span lang="km">{{ day.dayKm }}</span>
+                  <small>{{ day.dayEn }}</small>
+                </h3>
+                <ol class="programme__steps">
+                  <li v-for="step in day.steps" :key="step.km" class="programme__step">
+                    <span class="programme__time" lang="km">
+                      {{ step.time }}
+                      <small>{{ step.period }}</small>
+                    </span>
+                    <span class="programme__name">
+                      <span lang="km">{{ step.km }}</span>
+                      <small>{{ step.en }}</small>
+                    </span>
+                  </li>
+                </ol>
+              </section>
+            </div>
 
-            <ol class="programme inside-item" style="--i: 2">
-              <li v-for="step in programme" :key="step.time" class="programme__step">
-                <span class="programme__time" lang="km">{{ step.time }}</span>
-                <span class="programme__name">
-                  <span lang="km">{{ step.km }}</span>
-                  <small>{{ step.en }}</small>
-                </span>
-              </li>
-            </ol>
-
-            <p class="inside__closing inside-item" lang="km" style="--i: 3">សូមអរគុណ</p>
+            <p class="inside__closing inside-item" lang="km" style="--i: 4">សូមអរគុណ</p>
           </InvitationPaper>
         </section>
-        </template>
 
         <!-- Cover: front of the folder, with the left inside page on its back -->
         <div class="book__cover" @click="toggle">
@@ -242,7 +229,6 @@ function resetTilt() {
           </article>
 
           <!-- Left inside page: bilingual invitation text -->
-          <template v-if="hasOpened">
           <section
             class="book__face book__face--back"
             aria-labelledby="detail-title"
@@ -308,7 +294,9 @@ function resetTilt() {
                 of the wedding reception of our children
               </p>
 
-              <p class="detail__script inside-item" style="--i: 8">Sok Dara &amp; Sopheak Sokuntha</p>
+              <p class="detail__script inside-item" style="--i: 8">
+                <span class="nowrap">Sok Dara &amp;</span> <span class="nowrap">Sopheak Sokuntha</span>
+              </p>
 
               <!-- Update the datetime attribute together with the visible date -->
               <time class="detail__date inside-item" datetime="2027-01-17" style="--i: 9">
@@ -323,7 +311,6 @@ function resetTilt() {
               <p class="detail__venue inside-item" style="--i: 10">Rumdul Ceremony Hall, Phnom Penh</p>
             </InvitationPaper>
           </section>
-          </template>
         </div>
       </div>
     </div>
@@ -493,9 +480,15 @@ function resetTilt() {
   transition: visibility 0s linear var(--dur-book);
 }
 
+/* translateZ keeps the page behind the cover during the flip, but under the perspective it
+   also shrinks the page a hair, so the browser resamples the text and it looks soft. Once
+   the cover is fully open the page lies flat (crisp text); on close it steps back at once. */
 .is-open .book__page {
   visibility: visible;
-  transition-delay: 0s;
+  transform: none;
+  transition:
+    visibility 0s,
+    transform 0s linear var(--dur-book);
 }
 
 .book__cover {
@@ -553,7 +546,7 @@ function resetTilt() {
 .invitation__title,
 .invitation__invite,
 .inside__title {
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -663,82 +656,113 @@ function resetTilt() {
   color: var(--gold-deep);
 }
 
-.inside__details {
-  display: grid;
-  gap: 1.2cqi;
-  width: 100%;
-  padding-block: 2cqi;
-  border-block: 1px solid rgba(168, 134, 66, 0.45);
-}
-
-.inside__details div {
-  display: grid;
-  grid-template-columns: 34% 1fr;
-  align-items: baseline;
-  gap: 2cqi;
-  text-align: left;
-}
-
-.inside__details dt {
-  font-family: var(--font-khmer);
-  font-size: clamp(10px, 2.5cqi, 13px);
-  color: var(--gold-deep);
-  text-align: right;
-}
-
-.inside__details dd {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: clamp(12px, 3cqi, 16px);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
-.inside__details address {
-  font-style: normal;
-}
-
+/* Order of ceremonies: a heading per day, then time | ceremony rows */
 .programme {
   display: grid;
-  gap: 1.4cqi;
+  gap: 3cqi;
   width: 100%;
+}
+
+.programme__day {
+  display: grid;
+  gap: 1.4cqi;
+}
+
+/* Day heading between two gold hairlines */
+.programme__day-title {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 2.4cqi;
+  font-weight: 400;
+}
+
+.programme__day-title::before,
+.programme__day-title::after {
+  content: "";
+  grid-row: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 134, 66, 0.6));
+}
+
+.programme__day-title::before {
+  grid-column: 1;
+}
+
+.programme__day-title::after {
+  grid-column: 3;
+  background: linear-gradient(90deg, rgba(168, 134, 66, 0.6), transparent);
+}
+
+.programme__day-title span {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-khmer-light);
+  font-size: clamp(11px, 2.9cqi, 15px);
+  line-height: 1.7;
+  color: var(--gold-ink);
+}
+
+.programme__day-title small {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(9.5px, 2.2cqi, 12px);
+  line-height: 1.2;
+  color: var(--gold-deep);
+}
+
+.programme__steps {
+  display: grid;
+  gap: 1cqi;
   list-style: none;
 }
 
 .programme__step {
   display: grid;
-  grid-template-columns: 34% 1fr;
+  grid-template-columns: 30% 1fr;
   align-items: baseline;
-  gap: 2cqi;
-  padding-bottom: 1.2cqi;
+  gap: 2.4cqi;
+  padding-bottom: 1cqi;
   border-bottom: 1px dashed rgba(168, 134, 66, 0.4);
   text-align: left;
 }
 
 .programme__step:last-child {
   border-bottom: 0;
+  padding-bottom: 0;
 }
 
+/* Clock time, with ព្រឹក / រសៀល beneath it */
 .programme__time {
+  display: grid;
   font-family: var(--font-khmer-light);
-  font-size: clamp(11px, 2.9cqi, 15px);
+  font-size: clamp(11px, 2.8cqi, 15px);
+  line-height: 1.5;
   color: var(--gold-deep);
   text-align: right;
+}
+
+.programme__time small {
+  font-family: var(--font-khmer);
+  font-size: clamp(9px, 2.1cqi, 11.5px);
+  line-height: 1.4;
+  color: var(--gold-ink);
 }
 
 .programme__name {
   display: grid;
   font-family: var(--font-khmer);
-  font-size: clamp(11px, 2.9cqi, 15px);
-  line-height: 1.6;
+  font-size: clamp(11px, 2.8cqi, 15px);
+  line-height: 1.55;
   color: var(--ink);
 }
 
 .programme__name small {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: clamp(10px, 2.4cqi, 13px);
+  font-size: clamp(9.5px, 2.3cqi, 13px);
   line-height: 1.3;
   color: var(--gold-deep);
 }
@@ -769,7 +793,7 @@ function resetTilt() {
   font-weight: 400;
   font-size: clamp(15px, 4.6cqi, 24px);
   line-height: 1.7;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -855,7 +879,7 @@ function resetTilt() {
   font-family: var(--font-khmer-display);
   font-size: clamp(13px, 3.6cqi, 19px);
   line-height: 1.7;
-  background: var(--gold-foil);
+  background: var(--gold-foil-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -901,12 +925,17 @@ function resetTilt() {
   font-family: var(--font-script);
   font-size: clamp(22px, 6.4cqi, 34px);
   line-height: 1.2;
-  background: var(--gold-foil);
+  text-wrap: balance;
+  background: var(--gold-foil-text);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   filter: var(--gold-emboss);
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 
 /* Weekday | DD / YYYY | Month */
@@ -1104,6 +1133,77 @@ function resetTilt() {
       translate: 0 0;
       scale: 1;
     }
+  }
+}
+
+/* ---------- Phones: larger, darker-reading inside pages ----------
+   The pages stack on phones, so they can grow taller; on wider screens the open spread
+   has to fit the window height, so the sizes above stay as they are. */
+@media (max-width: 767px) {
+  .detail-paper :deep(.paper-board__content) {
+    gap: max(8px, 1.8cqi);
+  }
+
+  .detail__title {
+    font-size: clamp(17px, 5cqi, 26px);
+    margin-bottom: 0.6cqi;
+  }
+
+  .detail__parents,
+  .detail__message {
+    font-size: clamp(11.5px, 2.6cqi, 13.5px);
+    line-height: 1.8;
+  }
+
+  .detail__families--en .detail__parents {
+    font-size: clamp(10.5px, 2.4cqi, 12.5px);
+    line-height: 1.55;
+  }
+
+  .detail__invite {
+    font-size: clamp(12.5px, 3cqi, 16px);
+  }
+
+  .detail__label {
+    font-size: clamp(10.5px, 2.4cqi, 12.5px);
+  }
+
+  .detail__name {
+    font-size: clamp(16px, 4.2cqi, 21px);
+  }
+
+  .detail__request {
+    font-size: clamp(10px, 2.2cqi, 12px);
+    line-height: 1.6;
+  }
+
+  .detail__script {
+    font-size: clamp(26px, 6.8cqi, 36px);
+  }
+
+  .detail__date-side,
+  .detail__date-day small,
+  .detail__venue {
+    font-size: clamp(10px, 2.2cqi, 12px);
+  }
+
+  .inside__subtitle {
+    font-size: clamp(10px, 2.3cqi, 12.5px);
+  }
+
+  .programme__day-title span,
+  .programme__time,
+  .programme__name {
+    font-size: clamp(12px, 2.9cqi, 15px);
+  }
+
+  .programme__day-title small,
+  .programme__name small {
+    font-size: clamp(10.5px, 2.4cqi, 13px);
+  }
+
+  .programme__time small {
+    font-size: clamp(10px, 2.3cqi, 12px);
   }
 }
 

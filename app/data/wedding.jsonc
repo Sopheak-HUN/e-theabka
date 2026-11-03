@@ -23,6 +23,35 @@
     "mapQuery": "Phnom Penh, Cambodia",
   },
 
+  // Order of ceremonies on the inside page of the card, grouped by day.
+  //   time: the clock time as printed; period: ព្រឹក (morning), រសៀល (afternoon), ល្ងាច (evening)
+  "programme": [
+    {
+      "dayKm": "ថ្ងៃទី១",
+      "dayEn": "Day one",
+      "steps": [
+        { "time": "៥:០០", "period": "ព្រឹក", "km": "ថ្ងៃចូលរោងជ័យ", "en": "Entering the wedding pavilion" },
+      ],
+    },
+    {
+      "dayKm": "ថ្ងៃទី២ (ពេលព្រឹក)",
+      "dayEn": "Day two, morning",
+      "steps": [
+        { "time": "៧:០០", "period": "ព្រឹក", "km": "ពិធីដង្ហែ (ហែជំនូន)", "en": "Gift procession" },
+        { "time": "៧:៣០", "period": "ព្រឹក", "km": "ពិធីទទួលកូនកំលោះ", "en": "Welcoming the groom" },
+        { "time": "៨:៣០", "period": "ព្រឹក", "km": "ពិធីកាត់សក់", "en": "Hair-cutting ceremony" },
+        { "time": "៩:៣០", "period": "ព្រឹក", "km": "ពិធីសំពះផ្ទឹម", "en": "Blessing of the couple" },
+      ],
+    },
+    {
+      "dayKm": "ថ្ងៃទី២ (ពេលល្ងាច)",
+      "dayEn": "Day two, evening",
+      "steps": [
+        { "time": "៥:០០", "period": "រសៀល", "km": "ពិធីទទួលភ្ញៀវ", "en": "Receiving the guests" },
+      ],
+    },
+  ],
+
   // Photo prints in the gallery, in order.
   //   src:   path under /public, e.g. "/gallery/01.jpg". Leave it out to show a placeholder print.
   //   shape: "portrait" | "landscape" | "square"

@@ -12,11 +12,13 @@ useSeoMeta({
   ogTitle: title,
   ogDescription: description,
   ogSiteName: couple,
-  twitterCard: 'summary',
+  twitterCard: 'summary_large_image',
   twitterTitle: title,
   twitterDescription: description,
   description,
 })
+
+defineOgImage('Wedding', { guest }, { alt: title })
 </script>
 
 <template>
@@ -33,6 +35,7 @@ useSeoMeta({
       </div>
     </main>
     <WeddingFooter />
+    <BackgroundMusic />
   </div>
 </template>
 

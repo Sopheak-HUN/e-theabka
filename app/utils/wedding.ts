@@ -18,6 +18,15 @@ export interface GiftAccount {
   qr?: string
 }
 
+export interface BackgroundMusic {
+  /** Path under /public to the song, e.g. '/music/wedding.mp3' */
+  src: string
+  /** Shown when hovering the music button */
+  title?: string
+  /** 0 to 1 */
+  volume?: number
+}
+
 export interface ProgrammeDay {
   dayKm: string
   dayEn: string
@@ -56,6 +65,7 @@ export interface WeddingDetails {
   programme: ProgrammeDay[]
   gallery: GalleryPhoto[]
   gift?: GiftAccount
+  music?: BackgroundMusic
 }
 
 // JSON with // and /* */ comments and trailing commas. Strings are copied as-is,

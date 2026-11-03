@@ -88,4 +88,13 @@
     "bank": "ABA Bank",
     "account": "000 000 000"
   },
+
+  // Background song, looping from the guest's first tap (browsers block sound before that).
+  //   src: path under /public, e.g. "/music/wedding.mp3" (put the file in public/music/).
+  //   The music button stays hidden until the file loads. Remove "music" to turn it off.
+  "music": {
+    "src": "/music/wedding.mp3",
+    "title": "ឱ!គូព្រេងបងអើយ! · ឯក ស៊ីដេ ft. ហ៊ីម ស៊ីវន",
+    "volume": 0.5,
+  },
 }

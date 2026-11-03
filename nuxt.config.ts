@@ -7,7 +7,21 @@ export default defineNuxtConfig({
   ssr: true,
   telemetry: false,
   css: ['~/assets/css/main.css'],
-  modules: ['nuxt-og-image'],
+  modules: ['@nuxt/fonts', 'nuxt-og-image'],
+  // Link previews need absolute image URLs: set NUXT_SITE_URL to the live address when deploying
+  site: { url: process.env.NUXT_SITE_URL || 'http://localhost:3000' },
+  // The share image (app/components/OgImage/Wedding.takumi.vue) only sees fonts loaded here
+  fonts: {
+    families: [
+      { name: 'Moul', weights: [400], subsets: ['khmer', 'latin'], global: true },
+      { name: 'Noto Serif Khmer', weights: [400, 500], subsets: ['khmer', 'latin'], global: true },
+      { name: 'Cormorant Garamond', weights: [400, 500], global: true },
+      { name: 'Pinyon Script', weights: [400], global: true },
+    ],
+  },
+  ogImage: {
+    defaults: { width: 1200, height: 630 },
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'km' },

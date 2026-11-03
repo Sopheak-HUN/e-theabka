@@ -2,8 +2,8 @@
 // Personalise the guest box with ?to=Guest%20Name in the link.
 const guest = useRequestURL().searchParams.get('to') ?? ''
 
-// The inside page's order of ceremonies comes from app/data/wedding.jsonc
-const programme = wedding.programme
+// Names, parents, date, venue and the order of ceremonies all come from app/data/wedding.jsonc
+const { groom, bride, venue, programme } = wedding
 
 const open = ref(false)
 // Phones only: the book has room reserved above it for the upper page.
@@ -205,8 +205,8 @@ function resetTilt() {
                 សិរីមង្គលអាពាហ៍ពិពាហ៍
               </h1>
 
-              <!-- Edit the couple's initials here -->
-              <MonogramCartouche class="invitation__monogram cover-item" groom="ដ" bride="ស" style="--i: 1" />
+              <!-- Initials, names, date and venue: app/data/wedding.jsonc -->
+              <MonogramCartouche class="invitation__monogram cover-item" :groom="groom.initial" :bride="bride.initial" style="--i: 1" />
 
               <div class="invitation__guest cover-item" style="--i: 2">
                 <p class="invitation__invite" lang="km">សូមគោរពអញ្ជើញ</p>
@@ -218,11 +218,11 @@ function resetTilt() {
               <div class="invitation__details cover-item" lang="km" style="--i: 3">
                 <!-- Line 1: date and time · Line 2: venue -->
                 <p>
-                  ថ្ងៃ<time datetime="2027-01-17">អាទិត្យ ទី១៧ ខែមករា ឆ្នាំ២០២៧</time>
-                  វេលាម៉ោង <time datetime="17:00">៥:០០ ល្ងាច</time>
+                  <time :datetime="weddingDate.iso">{{ wedding.dateKm }}</time>
+                  <time :datetime="weddingDate.isoTime">{{ wedding.timeKm }}</time>
                 </p>
                 <address>
-                  ប្រារព្ធនៅមជ្ឈមណ្ឌលពិធីការរំដួល ភ្នំពេញ
+                  ប្រារព្ធនៅ{{ venue.km }} {{ venue.cityKm }}
                 </address>
               </div>
             </InvitationPaper>
@@ -242,13 +242,13 @@ function resetTilt() {
               <!-- Khmer: parents of the groom (left) and bride (right) -->
               <div class="detail__families inside-item" lang="km" style="--i: 1">
                 <p class="detail__parents">
-                  <span>លោក សុខ វណ្ណៈ</span>
-                  <span>លោកស្រី ចាន់ ស្រីមុំ</span>
+                  <span>{{ groom.father.km }}</span>
+                  <span>{{ groom.mother.km }}</span>
                 </p>
                 <p class="detail__invite">សូមគោរពអញ្ជើញ</p>
                 <p class="detail__parents">
-                  <span>លោក សុភ័ក្រ រិទ្ធី</span>
-                  <span>លោកស្រី កែវ បុប្ផា</span>
+                  <span>{{ bride.father.km }}</span>
+                  <span>{{ bride.mother.km }}</span>
                 </p>
               </div>
 
@@ -261,18 +261,18 @@ function resetTilt() {
               <div class="detail__couple inside-item" lang="km" style="--i: 3">
                 <p>
                   <span class="detail__label">កូនប្រុសនាម</span>
-                  <span class="detail__name">សុខ ដារ៉ា</span>
+                  <span class="detail__name">{{ groom.km }}</span>
                 </p>
                 <p>
                   <span class="detail__label">កូនស្រីនាម</span>
-                  <span class="detail__name">សុភ័ក្រ សុគន្ធា</span>
+                  <span class="detail__name">{{ bride.km }}</span>
                 </p>
               </div>
 
               <p class="detail__message inside-item" lang="km" style="--i: 4">
-                ដែលនឹងប្រព្រឹត្តទៅនៅ<span class="invitation__phrase">ថ្ងៃ<time datetime="2027-01-17">អាទិត្យ ទី១៧ ខែមករា ឆ្នាំ២០២៧</time></span>
-                <span class="invitation__phrase">វេលាម៉ោង <time datetime="17:00">៥:០០ ល្ងាច</time></span>
-                នៅមជ្ឈមណ្ឌលពិធីការរំដួល ភ្នំពេញ
+                ដែលនឹងប្រព្រឹត្តទៅនៅ<span class="invitation__phrase"><time :datetime="weddingDate.iso">{{ wedding.dateKm }}</time></span>
+                <span class="invitation__phrase"><time :datetime="weddingDate.isoTime">{{ wedding.timeKm }}</time></span>
+                នៅ{{ venue.km }} {{ venue.cityKm }}
               </p>
 
               <span class="detail__rule inside-item" aria-hidden="true" style="--i: 5" />
@@ -280,12 +280,12 @@ function resetTilt() {
               <!-- English -->
               <div class="detail__families detail__families--en inside-item" style="--i: 6">
                 <p class="detail__parents">
-                  <span>Mr. Sok Vannak</span>
-                  <span>Mrs. Chan Sreymom</span>
+                  <span>{{ groom.father.en }}</span>
+                  <span>{{ groom.mother.en }}</span>
                 </p>
                 <p class="detail__parents">
-                  <span>Mr. Sopheak Rithy</span>
-                  <span>Mrs. Keo Bopha</span>
+                  <span>{{ bride.father.en }}</span>
+                  <span>{{ bride.mother.en }}</span>
                 </p>
               </div>
 
@@ -295,20 +295,19 @@ function resetTilt() {
               </p>
 
               <p class="detail__script inside-item" style="--i: 8">
-                <span class="nowrap">Sok Dara &amp;</span> <span class="nowrap">Sopheak Sokuntha</span>
+                <span class="nowrap">{{ groom.en }} &amp;</span> <span class="nowrap">{{ bride.en }}</span>
               </p>
 
-              <!-- Update the datetime attribute together with the visible date -->
-              <time class="detail__date inside-item" datetime="2027-01-17" style="--i: 9">
-                <span class="detail__date-side">Sunday</span>
+              <time class="detail__date inside-item" :datetime="weddingDate.iso" style="--i: 9">
+                <span class="detail__date-side">{{ weddingDate.weekday }}</span>
                 <span class="detail__date-day">
-                  17
-                  <small>2027</small>
+                  {{ weddingDate.day }}
+                  <small>{{ weddingDate.year }}</small>
                 </span>
-                <span class="detail__date-side">January</span>
+                <span class="detail__date-side">{{ weddingDate.month }}</span>
               </time>
 
-              <p class="detail__venue inside-item" style="--i: 10">Rumdul Ceremony Hall, Phnom Penh</p>
+              <p class="detail__venue inside-item" style="--i: 10">{{ venue.en }}, {{ venue.cityEn }}</p>
             </InvitationPaper>
           </section>
         </div>

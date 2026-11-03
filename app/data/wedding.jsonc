@@ -2,11 +2,24 @@
 // Comments and trailing commas are allowed. Save the file and the page reloads.
 // (The invitation card itself still has its own copy of the names, date and venue.)
 {
-  "groom": { "km": "សុខ ដារ៉ា", "en": "Sok Dara", "initial": "ដ" },
-  "bride": { "km": "សុភ័ក្រ សុគន្ធា", "en": "Sopheak Sokuntha", "initial": "ស" },
+  // The couple and their parents. "initial" is the letter in the cover's gold monogram.
+  "groom": {
+    "km": "សុខ ដារ៉ា",
+    "en": "Sok Dara",
+    "initial": "ដ",
+    "father": { "km": "លោក សុខ វណ្ណៈ", "en": "Mr. Sok Vannak" },
+    "mother": { "km": "លោកស្រី ចាន់ ស្រីមុំ", "en": "Mrs. Chan Sreymom" },
+  },
+  "bride": {
+    "km": "សុភ័ក្រ សុគន្ធា",
+    "en": "Sopheak Sokuntha",
+    "initial": "ស",
+    "father": { "km": "លោក សុភ័ក្រ រិទ្ធី", "en": "Mr. Sopheak Rithy" },
+    "mother": { "km": "លោកស្រី កែវ បុប្ផា", "en": "Mrs. Keo Bopha" },
+  },
 
-  // Reception start and end, Phnom Penh time (UTC+7). The countdown and
-  // "Save the date" button read these.
+  // Reception start and end, Phnom Penh time (UTC+7). The countdown, the card's date
+  // block and the "Save the date" button read these; keep the text lines below in step.
   "start": "2027-01-17T17:00:00+07:00",
   "end": "2027-01-17T22:00:00+07:00",
   "dateKm": "ថ្ងៃអាទិត្យ ទី១៧ ខែមករា ឆ្នាំ២០២៧",
@@ -19,6 +32,9 @@
     "en": "Rumdul Ceremony Hall",
     "addressKm": "រាជធានីភ្នំពេញ",
     "addressEn": "Phnom Penh, Cambodia",
+    // Short city name printed after the venue on the invitation card
+    "cityKm": "ភ្នំពេញ",
+    "cityEn": "Phnom Penh",
     // What Google Maps searches for: a place name, an address, or "11.5564,104.9282"
     "mapQuery": "Phnom Penh, Cambodia",
   },
@@ -47,7 +63,7 @@
       "dayKm": "ថ្ងៃទី២ (ពេលល្ងាច)",
       "dayEn": "Day two, evening",
       "steps": [
-        { "time": "៥:០០", "period": "រសៀល", "km": "ពិធីទទួលភ្ញៀវ", "en": "Receiving the guests" },
+        { "time": "៥:០០", "period": "ល្ងាច", "km": "ពិធីទទួលភ្ញៀវ", "en": "Receiving the guests" },
       ],
     },
   ],

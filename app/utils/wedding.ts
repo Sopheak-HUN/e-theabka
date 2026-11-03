@@ -24,10 +24,15 @@ export interface ProgrammeDay {
   steps: { time: string; period: string; km: string; en: string }[]
 }
 
-interface Person {
+interface Name {
   km: string
   en: string
+}
+
+interface Person extends Name {
   initial: string
+  father: Name
+  mother: Name
 }
 
 export interface WeddingDetails {
@@ -39,7 +44,15 @@ export interface WeddingDetails {
   dateEn: string
   timeKm: string
   timeEn: string
-  venue: { km: string; en: string; addressKm: string; addressEn: string; mapQuery: string }
+  venue: {
+    km: string
+    en: string
+    addressKm: string
+    addressEn: string
+    cityKm: string
+    cityEn: string
+    mapQuery: string
+  }
   programme: ProgrammeDay[]
   gallery: GalleryPhoto[]
   gift?: GiftAccount
@@ -74,6 +87,21 @@ function parseJsonc(text: string): unknown {
 }
 
 export const wedding = parseJsonc(source) as WeddingDetails
+
+// The reception date split up for printing, in Phnom Penh time on the server and in every
+// browser alike: { weekday: 'Sunday', day: '17', month: 'January', year: '2027' }
+const startDate = new Date(wedding.start)
+const part = (option: Intl.DateTimeFormatOptions) =>
+  startDate.toLocaleDateString('en-GB', { ...option, timeZone: 'Asia/Phnom_Penh' })
+export const weddingDate = {
+  weekday: part({ weekday: 'long' }),
+  day: part({ day: 'numeric' }),
+  month: part({ month: 'long' }),
+  year: part({ year: 'numeric' }),
+  /** For <time datetime>: '2027-01-17' and '17:00', as written in "start" */
+  iso: wedding.start.slice(0, 10),
+  isoTime: wedding.start.slice(11, 16),
+}
 
 const khmerDigits = '០១២៣៤៥៦៧៨៩'
 

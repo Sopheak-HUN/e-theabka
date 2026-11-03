@@ -15,11 +15,7 @@ const calendar = 'https://calendar.google.com/calendar/render?' + new URLSearchP
   location: `${venue.en}, ${venue.addressEn}`,
 }).toString()
 
-const date = new Date(wedding.start)
-const weekday = date.toLocaleDateString('en-GB', { weekday: 'long', timeZone: 'Asia/Phnom_Penh' })
-const month = date.toLocaleDateString('en-GB', { month: 'long', timeZone: 'Asia/Phnom_Penh' })
-const day = date.toLocaleDateString('en-GB', { day: 'numeric', timeZone: 'Asia/Phnom_Penh' })
-const year = date.toLocaleDateString('en-GB', { year: 'numeric', timeZone: 'Asia/Phnom_Penh' })
+const { weekday, day, month, year } = weddingDate
 </script>
 
 <template>

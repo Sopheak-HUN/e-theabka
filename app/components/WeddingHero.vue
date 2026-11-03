@@ -238,9 +238,18 @@ onBeforeUnmount(() => cleanup?.())
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .wedding-hero {
-    padding: var(--space-l) var(--space-s);
+    padding: var(--space-l) 0.25rem;
+  }
+
+  .wedding-hero__table::after {
+    display: none;
+  }
+
+  .wedding-hero__light {
+    mix-blend-mode: normal;
+    opacity: 0.35;
   }
 
   .wedding-hero__card--hide-mobile {
@@ -250,6 +259,16 @@ onBeforeUnmount(() => cleanup?.())
   .wedding-hero__card {
     width: calc(var(--size) * 150px);
     filter: blur(calc(var(--blur) + 1.5px));
+    will-change: auto;
+  }
+
+  @keyframes table-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 </style>

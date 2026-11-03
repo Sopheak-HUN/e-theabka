@@ -51,7 +51,6 @@ const programme = [
   padding: 4cqi;
   border-radius: 1cqi;
   background:
-    var(--tex-paper),
     radial-gradient(130% 90% at 25% 10%, var(--sage-light), var(--sage) 50%, var(--sage-dark));
 }
 
@@ -75,7 +74,6 @@ const programme = [
   justify-content: space-evenly;
   padding: 12cqi 13cqi;
   background:
-    var(--tex-paper),
     linear-gradient(160deg, #FFFCF5, var(--ivory) 50%, #EEE5D3);
 }
 
@@ -166,6 +164,21 @@ const programme = [
     opacity: 1;
     scale: 1;
     translate: 0 0;
+  }
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  .backdrop {
+    filter: none;
+  }
+
+  @keyframes card-settle {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 </style>

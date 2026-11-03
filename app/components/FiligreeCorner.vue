@@ -56,4 +56,10 @@ const mirrors = ['', 'matrix(0 1 1 0 0 0)']
 .filigree-corner__gold {
   fill: url(#kh-gold-shimmer);
 }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .filigree-corner__gold {
+    fill: url(#kh-gold);
+  }
+}
 </style>

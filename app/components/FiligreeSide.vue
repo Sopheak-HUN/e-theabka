@@ -45,4 +45,10 @@ const halves = ['', 'matrix(1 0 0 -1 0 180)']
 .filigree-side__gold {
   fill: url(#kh-gold-shimmer);
 }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .filigree-side__gold {
+    fill: url(#kh-gold);
+  }
+}
 </style>

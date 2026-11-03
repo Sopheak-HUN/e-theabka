@@ -123,4 +123,14 @@ const mirror = ['', 'scale(-1 1)']
   stroke: url(#kh-gold);
   stroke-width: 1.1;
 }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .cartouche__fill {
+    fill: url(#kh-gold);
+  }
+
+  .cartouche__line {
+    stroke: url(#kh-gold);
+  }
+}
 </style>

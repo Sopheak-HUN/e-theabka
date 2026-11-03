@@ -203,4 +203,22 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
     display: none;
   }
 }
+
+@media (max-width: 767px) {
+  .paper-board {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+      0 4px 12px rgba(40, 36, 24, 0.25),
+      0 16px 36px -10px rgba(40, 36, 24, 0.35);
+  }
+
+  .paper-board__insert {
+    box-shadow: 0 0.4cqi 0.8cqi rgba(30, 34, 24, 0.35);
+  }
+
+  .paper-board__sheen {
+    display: none;
+  }
+}
 </style>

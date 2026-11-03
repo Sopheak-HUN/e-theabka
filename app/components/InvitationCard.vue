@@ -14,6 +14,7 @@ const programme = [
 const open = ref(false)
 // Phones only: the book has room reserved above it for the upper page.
 const raised = ref(false)
+const hasOpened = ref(false)
 const stage = ref<HTMLElement | null>(null)
 const book = ref<HTMLElement | null>(null)
 
@@ -72,11 +73,13 @@ async function toggle() {
   cancelGlide()
 
   if (!stackedLayout?.matches || !book.value || !stage.value) {
+    if (!open.value && !hasOpened.value) hasOpened.value = true
     open.value = !open.value
     return
   }
 
   if (!open.value) {
+    if (!hasOpened.value) hasOpened.value = true
     // Phones: make room above first, then flip the cover up and glide to the top page.
     if (!raised.value) {
       closedBookTop = bookTop()
@@ -148,6 +151,7 @@ function resetTilt() {
     <div class="invitation-float">
       <div ref="book" class="book" @pointermove="onPointerMove" @pointerleave="resetTilt">
         <!-- Inside right page: revealed when the cover opens -->
+        <template v-if="hasOpened">
         <section
           id="invitation-inside"
           class="book__page"
@@ -189,6 +193,7 @@ function resetTilt() {
             <p class="inside__closing inside-item" lang="km" style="--i: 3">សូមអរគុណ</p>
           </InvitationPaper>
         </section>
+        </template>
 
         <!-- Cover: front of the folder, with the left inside page on its back -->
         <div class="book__cover" @click="toggle">
@@ -226,6 +231,7 @@ function resetTilt() {
           </article>
 
           <!-- Left inside page: bilingual invitation text -->
+          <template v-if="hasOpened">
           <section
             class="book__face book__face--back"
             aria-labelledby="detail-title"
@@ -306,6 +312,7 @@ function resetTilt() {
               <p class="detail__venue inside-item" style="--i: 10">Rumdul Ceremony Hall, Phnom Penh</p>
             </InvitationPaper>
           </section>
+          </template>
         </div>
       </div>
     </div>
@@ -405,6 +412,22 @@ function resetTilt() {
 .is-open .invitation-shadow {
   left: -46%;
   right: -46%;
+}
+
+/* Phones: skip the breathing glow to avoid per-frame blur repaints */
+@media (max-width: 767px), (pointer: coarse) {
+  .invitation-glow {
+    animation: none;
+    filter: blur(16px);
+  }
+
+  .invitation-shadow {
+    animation: none;
+  }
+
+  .invitation-float {
+    animation: none;
+  }
 }
 
 .invitation-float {
@@ -1054,11 +1077,26 @@ function resetTilt() {
   }
 }
 
+@media (max-width: 767px), (pointer: coarse) {
+  @keyframes card-enter {
+    from {
+      opacity: 0;
+      translate: 0 4vh;
+      scale: 0.96;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+}
+
 /* ---------- Phones: the cover flips upwards and the pages stack ---------- */
 @media (max-width: 767px) {
   .invitation-stage,
   .invitation-stage.is-open {
-    --card-w: min(92vw, 28rem);
+    --card-w: min(98vw, calc(100vw - 0.5rem), 32rem);
     --peek: x 14deg;
     --peek-rest: x 0deg;
     --peel: rotateX(8deg);
@@ -1067,6 +1105,12 @@ function resetTilt() {
   .invitation-stage {
     --lean-x: 2deg;
     --lean-z: -0.8deg;
+    transition: none;
+  }
+
+  .invitation-glow,
+  .invitation-shadow {
+    transition: none;
   }
 
   .is-open .invitation-glow {
@@ -1096,6 +1140,12 @@ function resetTilt() {
 
   .book__face--back {
     transform: rotateX(180deg);
+  }
+
+  .invitation-hint {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(248, 243, 232, 0.92);
   }
 }
 </style>

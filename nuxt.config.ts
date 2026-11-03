@@ -31,6 +31,11 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#E9DDC8' },
       ],
       link: [
+        // Gold heart on the sage board (favicon.ico holds 16, 32 and 48 px)
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-32.png', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/icon-192.png', sizes: '192x192' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {

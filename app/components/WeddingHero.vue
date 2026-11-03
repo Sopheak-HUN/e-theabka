@@ -160,6 +160,18 @@ onBeforeUnmount(() => cleanup?.())
   animation: table-in 2.4s ease-out both;
 }
 
+/* Kbach phka chan woven into the cloth, fading out towards the bottom so it meets the
+   sections' own pattern without a seam */
+.wedding-hero__table::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tex-kbach) center top / 180px;
+  opacity: 0.26;
+  -webkit-mask: linear-gradient(#000 70%, transparent 96%);
+  mask: linear-gradient(#000 70%, transparent 96%);
+}
+
 .wedding-hero__table::after {
   content: "";
   position: absolute;
@@ -245,6 +257,11 @@ onBeforeUnmount(() => cleanup?.())
 
   .wedding-hero__table::after {
     display: none;
+  }
+
+  .wedding-hero__table::before {
+    background-size: 140px;
+    opacity: 0.2;
   }
 
   .wedding-hero__light {

@@ -1,0 +1,46 @@
+// Everything the sections below the hero print: names, date, venue, photos and the gift QR.
+// Comments and trailing commas are allowed. Save the file and the page reloads.
+// (The invitation card itself still has its own copy of the names, date and venue.)
+{
+  "groom": { "km": "សុខ ដារ៉ា", "en": "Sok Dara", "initial": "ដ" },
+  "bride": { "km": "សុភ័ក្រ សុគន្ធា", "en": "Sopheak Sokuntha", "initial": "ស" },
+
+  // Reception start and end, Phnom Penh time (UTC+7). The countdown and
+  // "Save the date" button read these.
+  "start": "2027-01-17T17:00:00+07:00",
+  "end": "2027-01-17T22:00:00+07:00",
+  "dateKm": "ថ្ងៃអាទិត្យ ទី១៧ ខែមករា ឆ្នាំ២០២៧",
+  "dateEn": "Sunday, 17 January 2027",
+  "timeKm": "វេលាម៉ោង ៥:០០ ល្ងាច",
+  "timeEn": "5:00 PM",
+
+  "venue": {
+    "km": "មជ្ឈមណ្ឌលពិធីការរំដួល",
+    "en": "Rumdul Ceremony Hall",
+    "addressKm": "រាជធានីភ្នំពេញ",
+    "addressEn": "Phnom Penh, Cambodia",
+    // What Google Maps searches for: a place name, an address, or "11.5564,104.9282"
+    "mapQuery": "Phnom Penh, Cambodia",
+  },
+
+  // Photo prints in the gallery, in order.
+  //   src:   path under /public, e.g. "/gallery/01.jpg". Leave it out to show a placeholder print.
+  //   shape: "portrait" | "landscape" | "square"
+  "gallery": [
+    { "alt": "The couple at the riverside", "caption": "Riverside, Phnom Penh", "shape": "portrait" },
+    { "alt": "Hands with engagement rings", "caption": "The promise", "shape": "square" },
+    { "alt": "The couple in traditional dress", "caption": "In silk and gold", "shape": "landscape" },
+    { "alt": "Sunset walk", "caption": "Kep at dusk", "shape": "landscape" },
+    { "alt": "Laughing together", "caption": "Always laughing", "shape": "portrait" },
+    { "alt": "Temple steps", "caption": "Where it began", "shape": "square" }
+  ],
+
+  // Wedding gift (ចំណងដៃ): one account and its QR.
+  //   qr: path under /public to the bank's KHQR image, e.g. "/gift/khqr.png".
+  //       Leave it out to show a placeholder. Remove the whole "gift" entry to hide the section.
+  "gift": {
+    "name": "SOK DARA & SOPHEAK SOKUNTHA",
+    "bank": "ABA Bank",
+    "account": "000 000 000"
+  },
+}

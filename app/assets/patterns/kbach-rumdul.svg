@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120" viewBox="0 0 120 120">
+  <!-- Kbach rumdul: rumdul flowers (three broad outer petals round a closed three-lobed
+       dome, with flame tendrils curling out between the petals) on a 45-degree lattice,
+       four-petal kbach flames in the cells, seed dots between.
+       Drawn at full strength; the page sets the opacity. -->
+  <defs>
+    <!-- Outer petal: ovate, veined, its tip flicked over like a kbach flame -->
+    <g id="petal">
+      <path d="M-4.5 -6C-11 -12 -10.5 -22 -1.5 -29.5Q0 -31 1.4 -29.6C10 -22 11 -12 4.5 -6Q0 -4 -4.5 -6Z" />
+      <path class="line" d="M0.2 -30.2C2.6 -32.8 5.6 -32 5 -29.4 4.6 -27.8 2.8 -28 3 -29.2" />
+      <path class="line" d="M0 -9V-25M-3 -11C-5 -15 -5 -19 -3.4 -22.5M3 -11C5 -15 5 -19 3.4 -22.5" />
+    </g>
+    <!-- One lobe of the closed inner dome -->
+    <path id="lobe" d="M0 0C5.5 -2 7.5 -7.5 0 -11.5 -7.5 -7.5 -5.5 -2 0 0Z" />
+    <!-- Flame tendril curling out between two petals, with a small leaf off its S -->
+    <g id="tendril">
+      <path class="line" d="M0 -12C3.4 -15.5 -3.2 -19.5 0 -23.5 2 -26 5.4 -25.2 5 -22.4 4.6 -20.6 2.6 -20.8 2.8 -22.2" />
+      <path d="M0.6 -17.6C-2.8 -18.6 -5.6 -16.8 -7.8 -19.2-5.4 -21.6-2.2 -21 0.6 -17.6Z" />
+    </g>
+    <g id="rumdul">
+      <use href="#tendril" xlink:href="#tendril" transform="rotate(60)" />
+      <use href="#tendril" xlink:href="#tendril" transform="rotate(180)" />
+      <use href="#tendril" xlink:href="#tendril" transform="rotate(300)" />
+      <use href="#petal" xlink:href="#petal" />
+      <use href="#petal" xlink:href="#petal" transform="rotate(120)" />
+      <use href="#petal" xlink:href="#petal" transform="rotate(240)" />
+      <use href="#lobe" xlink:href="#lobe" transform="rotate(60)" />
+      <use href="#lobe" xlink:href="#lobe" transform="rotate(180)" />
+      <use href="#lobe" xlink:href="#lobe" transform="rotate(300)" />
+      <circle class="seed" r="1.8" />
+    </g>
+
+    <!-- Kbach flame petal (phni): scalloped on one edge, tip flicking back -->
+    <path id="flame" d="M0 -3C4 -5 6 -8.5 4.6 -11.4 6.6 -11.8 7.2 -13.8 5.8 -15.4 6.4 -17.6 4.4 -19.8 1 -20.4 2.6 -18.4 1.2 -16.8-1 -17.4-4.6 -15-5 -8 0 -3Z" />
+    <g id="phka-chan">
+      <use href="#flame" xlink:href="#flame" />
+      <use href="#flame" xlink:href="#flame" transform="rotate(90)" />
+      <use href="#flame" xlink:href="#flame" transform="rotate(180)" />
+      <use href="#flame" xlink:href="#flame" transform="rotate(270)" />
+      <circle class="ring" r="3.2" />
+      <circle class="seed" r="1.3" />
+      <circle class="seed" cx="6" cy="6" r="0.9" />
+      <circle class="seed" cx="-6" cy="6" r="0.9" />
+      <circle class="seed" cx="6" cy="-6" r="0.9" />
+      <circle class="seed" cx="-6" cy="-6" r="0.9" />
+    </g>
+    <g id="dots">
+      <circle class="seed" r="1.1" />
+      <circle class="seed" cx="3.4" r="0.6" />
+      <circle class="seed" cx="-3.4" r="0.6" />
+      <circle class="seed" cy="3.4" r="0.6" />
+      <circle class="seed" cy="-3.4" r="0.6" />
+    </g>
+  </defs>
+
+  <style>
+    path, use, .ring { fill: #C9A45C; fill-opacity: 0.2; stroke: #8C6A2C; stroke-width: 0.85; stroke-linejoin: round; stroke-linecap: round; }
+    .line { fill: none; stroke-width: 0.7; }
+    .ring { fill: none; stroke-width: 0.6; }
+    .seed { fill: #8C6A2C; fill-opacity: 1; stroke: none; }
+  </style>
+
+  <!-- Rumdul on the lattice points; the corner flower repeats across tiles -->
+  <use href="#rumdul" xlink:href="#rumdul" transform="translate(60 60) rotate(180) scale(0.82)" />
+  <use href="#rumdul" xlink:href="#rumdul" transform="translate(0 0) scale(0.82)" />
+  <use href="#rumdul" xlink:href="#rumdul" transform="translate(120 0) scale(0.82)" />
+  <use href="#rumdul" xlink:href="#rumdul" transform="translate(0 120) scale(0.82)" />
+  <use href="#rumdul" xlink:href="#rumdul" transform="translate(120 120) scale(0.82)" />
+
+  <!-- Four-petal kbach in each lattice cell (they sit on the tile edges) -->
+  <use href="#phka-chan" xlink:href="#phka-chan" transform="translate(60 0)" />
+  <use href="#phka-chan" xlink:href="#phka-chan" transform="translate(60 120)" />
+  <use href="#phka-chan" xlink:href="#phka-chan" transform="translate(0 60)" />
+  <use href="#phka-chan" xlink:href="#phka-chan" transform="translate(120 60)" />
+
+  <!-- Seed rosettes where the lattice lines cross between flowers -->
+  <use href="#dots" xlink:href="#dots" transform="translate(30 30)" />
+  <use href="#dots" xlink:href="#dots" transform="translate(90 30)" />
+  <use href="#dots" xlink:href="#dots" transform="translate(30 90)" />
+  <use href="#dots" xlink:href="#dots" transform="translate(90 90)" />
+</svg>

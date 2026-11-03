@@ -27,7 +27,13 @@ let glideFrame = 0
 let closedBookTop = 0
 let closedScroll = 0
 
-const bookTop = () => book.value!.getBoundingClientRect().top + window.scrollY
+// Layout position, ignoring the book's lean and lift transforms: they differ between
+// open and closed, so measuring through them makes closing land a few px off.
+const bookTop = () => {
+  let top = 0
+  for (let el: HTMLElement | null = book.value; el; el = el.offsetParent as HTMLElement | null) top += el.offsetTop
+  return top
+}
 const bookDuration = () =>
   reducedMotion ? 0 : parseFloat(getComputedStyle(stage.value!).getPropertyValue('--dur-book')) * 1000
 
@@ -79,7 +85,12 @@ async function toggle() {
   }
 
   if (!open.value) {
-    if (!hasOpened.value) hasOpened.value = true
+    // Mount the inside pages before measuring: they make the book taller, which moves
+    // the closed card, and closing must glide back to where it rests with them mounted.
+    if (!hasOpened.value) {
+      hasOpened.value = true
+      await nextTick()
+    }
     // Phones: make room above first, then flip the cover up and glide to the top page.
     if (!raised.value) {
       closedBookTop = bookTop()
@@ -460,8 +471,12 @@ function resetTilt() {
   grid-area: 1 / 1;
 }
 
-.invitation-stage:not(.is-open) .book:hover {
-  --lift: 1.015;
+/* Hover-capable pointers only: a tap leaves a sticky :hover on phones, which
+   would swell the card just after it closes. */
+@media (hover: hover) {
+  .invitation-stage:not(.is-open) .book:hover {
+    --lift: 1.015;
+  }
 }
 
 /* Shift right by half a page so the open spread stays centred */

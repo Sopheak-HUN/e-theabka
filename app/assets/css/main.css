@@ -55,10 +55,15 @@
   /* Textures */
   --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .2 .5 0 0 0 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
   --tex-linen: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .018' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .07 0 0 0 0 .03 .9 0 0 0 -.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+  /* Kbach phka chan woven into the tablecloth (kbach-rumdul.svg is the earlier rumdul version) */
+  --tex-kbach: url("../patterns/kbach-phka-chan.svg");
 }
 
 html {
   background: var(--beige);
+  /* The invitation card keeps the page still itself when it adds or removes room above
+     the book (InvitationCard setRaised); browser scroll anchoring would correct twice. */
+  overflow-anchor: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -70,4 +75,61 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Pill button in the style of the invitation's open/close hint */
+.wedding-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 1.05rem 0.4rem 0.45rem;
+  border: 1px solid rgba(168, 134, 66, 0.55);
+  border-radius: 999px;
+  background: rgba(248, 243, 232, 0.85);
+  box-shadow: 0 6px 18px rgba(52, 46, 32, 0.12);
+  font-family: var(--font-khmer);
+  font-weight: 500;
+  font-size: clamp(12px, 0.75rem + 0.2vw, 14px);
+  line-height: 1.6;
+  color: var(--sage-dark);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.wedding-button:hover {
+  background: var(--ivory);
+  box-shadow: 0 8px 22px rgba(52, 46, 32, 0.18);
+}
+
+.wedding-button:focus-visible {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 3px;
+}
+
+.wedding-button__icon {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--gold-light);
+}
+
+.wedding-button__icon svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wedding-button__en {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05em;
+  color: var(--gold-deep);
 }

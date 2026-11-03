@@ -23,7 +23,8 @@ defineOgImage('Wedding', { guest }, { alt: title })
 
 <template>
   <div>
-    <NuxtRouteAnnouncer />
+    <!-- <NuxtRouteAnnouncer /> -->
+      <BackgroundMusic />
     <main>
       <WeddingHero />
       <!-- The table continues below the hero; each section is another piece of the suite -->
@@ -35,7 +36,7 @@ defineOgImage('Wedding', { guest }, { alt: title })
       </div>
     </main>
     <WeddingFooter />
-    <BackgroundMusic />
+    <!-- <BackgroundMusic /> -->
   </div>
 </template>
 

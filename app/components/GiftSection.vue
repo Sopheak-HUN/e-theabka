@@ -43,7 +43,7 @@ onBeforeUnmount(() => clearTimeout(resetTimer))
           <dt class="visually-hidden">Bank</dt>
           <dd class="gift__bank">{{ gift.bank }}</dd>
           <dt class="visually-hidden">Account number</dt>
-          <dd class="gift__number">{{ gift.account }}</dd>
+          <dd class="gift__number selectable">{{ gift.account }}</dd>
         </dl>
 
         <button type="button" class="wedding-button" @click="copy">

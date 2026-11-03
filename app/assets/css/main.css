@@ -64,6 +64,15 @@ html {
   /* The invitation card keeps the page still itself when it adds or removes room above
      the book (InvitationCard setRaised); browser scroll anchoring would correct twice. */
   overflow-anchor: none;
+  /* No text selection or long-press callout; the gift account number opts back in */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.selectable {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 @media (prefers-reduced-motion: reduce) {

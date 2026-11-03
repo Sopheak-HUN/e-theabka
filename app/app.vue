@@ -1,3 +1,24 @@
+<script setup lang="ts">
+// Link previews (Telegram, Messenger, Facebook) read these from the server-rendered HTML,
+// so a link with ?to=Guest%20Name previews with that guest's name.
+const guest = useRequestURL().searchParams.get('to') ?? ''
+const couple = `${wedding.groom.en} & ${wedding.bride.en}`
+const title = guest ? `សូមគោរពអញ្ជើញ ${guest}` : `សិរីមង្គលអាពាហ៍ពិពាហ៍ ${couple}`
+const description = `${guest ? `${guest}, you are invited to the wedding of ${couple}` : `The wedding of ${couple}`}. ${wedding.dateEn}, ${wedding.timeEn}, ${wedding.venue.en}.`
+
+useSeoMeta({
+  ogType: 'website',
+  ogLocale: 'km_KH',
+  ogTitle: title,
+  ogDescription: description,
+  ogSiteName: couple,
+  twitterCard: 'summary',
+  twitterTitle: title,
+  twitterDescription: description,
+  description,
+})
+</script>
+
 <template>
   <div>
     <NuxtRouteAnnouncer />

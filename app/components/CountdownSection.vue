@@ -1,41 +1,81 @@
 <script setup lang="ts">
 // Save-the-date strip: days, hours, minutes and seconds to the reception, in Khmer numerals.
-// Filled in on the client only, so the server and browser never disagree about the time.
-// The numbers count up from zero when the strip first scrolls into view, then every digit
-// that changes rolls up like an odometer.
+// Rendered on the server; the server's clock travels in the payload so the browser hydrates
+// the same numbers, then switches to its own clock. The numbers count up from zero when the
+// strip first scrolls into view, then every digit that changes rolls up like an odometer.
 const target = new Date(wedding.start).getTime()
-const now = ref<number | null>(null)
+const now = useState<number | null>('countdown-now', () => Date.now())
 let timer: ReturnType<typeof setInterval> | undefined
 
 // 0..1 while counting up from zero, null once the real numbers are showing
 const rampProgress = ref<number | null>(null)
 const strip = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | undefined
+let visible = false
+let counted = false
 let rampFrame = 0
+
+// Each count-up step re-renders and repaints the gold digits, so it waits until scrolling
+// pauses with the strip in view, and steps about ten times a second rather than every frame.
+const RAMP_MS = 1600
+const RAMP_STEP_MS = 100
+const SCROLL_IDLE_MS = 150
+let idleTimer: ReturnType<typeof setTimeout> | undefined
+
+function countWhenScrollSettles() {
+  clearTimeout(idleTimer)
+  idleTimer = setTimeout(() => {
+    if (!visible || counted) return
+    counted = true
+    window.removeEventListener('scroll', countWhenScrollSettles)
+    countUp()
+  }, SCROLL_IDLE_MS)
+}
 
 function countUp() {
   const start = performance.now()
+  let lastStep = -Infinity
   const step = (time: number) => {
-    const t = Math.min(1, (time - start) / 1600)
-    rampProgress.value = 1 - (1 - t) ** 3
-    rampFrame = t < 1 ? requestAnimationFrame(step) : 0
-    if (t === 1) rampProgress.value = null
+    const t = Math.min(1, (time - start) / RAMP_MS)
+    if (t === 1) {
+      rampProgress.value = null
+      rampFrame = 0
+      return
+    }
+    if (time - lastStep >= RAMP_STEP_MS) {
+      rampProgress.value = 1 - (1 - t) ** 3
+      lastStep = time
+    }
+    rampFrame = requestAnimationFrame(step)
   }
   rampFrame = requestAnimationFrame(step)
 }
 
 onMounted(() => {
   now.value = Date.now()
-  timer = setInterval(() => (now.value = Date.now()), 1000)
+  // Tick only while the strip is on screen; off screen there is nothing to see
+  timer = setInterval(() => {
+    if (visible) now.value = Date.now()
+  }, 1000)
 
+  if (!strip.value || !('IntersectionObserver' in window)) {
+    visible = true
+    return
+  }
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduced || !strip.value || !('IntersectionObserver' in window)) return
-  rampProgress.value = 0
+  if (!reduced) {
+    rampProgress.value = 0
+    window.addEventListener('scroll', countWhenScrollSettles, { passive: true })
+  } else {
+    counted = true
+  }
+
   observer = new IntersectionObserver(
     ([entry]) => {
-      if (!entry?.isIntersecting) return
-      observer?.disconnect()
-      countUp()
+      visible = !!entry?.isIntersecting
+      if (!visible) return
+      now.value = Date.now()
+      if (!counted) countWhenScrollSettles()
     },
     { threshold: 0.4 },
   )
@@ -43,6 +83,8 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   clearInterval(timer)
+  clearTimeout(idleTimer)
+  window.removeEventListener('scroll', countWhenScrollSettles)
   observer?.disconnect()
   cancelAnimationFrame(rampFrame)
 })

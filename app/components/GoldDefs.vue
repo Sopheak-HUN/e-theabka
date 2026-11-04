@@ -2,12 +2,8 @@
 // Shared SVG gradients referenced by every ornament via url(#kh-gold…), url(#kh-silver) or url(#kh-rose).
 const svg = ref<SVGSVGElement | null>(null)
 
-onMounted(() => {
-  // Paused for reduced motion, and on phones/touch where the per-frame repaints cost too much.
-  if (window.matchMedia('(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)').matches) {
-    svg.value?.pauseAnimations()
-  }
-})
+// The moving gold repaints every ornament that uses it on every frame, so it stays still.
+onMounted(() => svg.value?.pauseAnimations())
 </script>
 
 <template>

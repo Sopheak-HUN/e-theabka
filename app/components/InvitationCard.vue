@@ -405,7 +405,6 @@ function resetTilt() {
   filter: blur(24px);
   pointer-events: none;
   transition: inset var(--dur-book) var(--ease-book);
-  animation: glow-breathe var(--dur-glow) ease-in-out infinite alternate;
 }
 
 .invitation-shadow {
@@ -421,7 +420,6 @@ function resetTilt() {
   transition:
     left var(--dur-book) var(--ease-book),
     right var(--dur-book) var(--ease-book);
-  animation: shadow-breathe var(--dur-float) ease-in-out infinite;
 }
 
 .is-open .invitation-glow {
@@ -433,26 +431,16 @@ function resetTilt() {
   right: -46%;
 }
 
-/* Phones: skip the breathing glow to avoid per-frame blur repaints */
+/* Phones: a smaller blur is cheaper to paint */
 @media (max-width: 767px), (pointer: coarse) {
   .invitation-glow {
-    animation: none;
     filter: blur(16px);
-  }
-
-  .invitation-shadow {
-    animation: none;
-  }
-
-  .invitation-float {
-    animation: none;
   }
 }
 
 .invitation-float {
   width: 100%;
   perspective: 2000px;
-  animation: card-float var(--dur-float) ease-in-out infinite;
 }
 
 /* ---------- Book ---------- */
@@ -580,9 +568,7 @@ function resetTilt() {
   font-weight: 400;
   font-size: clamp(17px, 5.4cqi, 28px);
   line-height: 1.8;
-  animation:
-    content-rise 1.2s var(--ease-silk) 1.1s both,
-    foil-shimmer var(--dur-shimmer) ease-in-out infinite alternate;
+  animation: content-rise 1.2s var(--ease-silk) 1.1s both;
 }
 
 .invitation__monogram {
@@ -1108,26 +1094,6 @@ function resetTilt() {
 @keyframes cover-peek {
   0%, 100% { rotate: var(--peek-rest); }
   35%, 55% { rotate: var(--peek); }
-}
-
-@keyframes card-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -10px; }
-}
-
-@keyframes shadow-breathe {
-  0%, 100% { opacity: 1; scale: 1; }
-  50% { opacity: 0.7; scale: 0.94; }
-}
-
-@keyframes glow-breathe {
-  from { opacity: 0.7; scale: 0.97; }
-  to { opacity: 1; scale: 1.03; }
-}
-
-@keyframes foil-shimmer {
-  from { background-position: 0% 50%; }
-  to { background-position: 100% 50%; }
 }
 
 @keyframes hint-pulse {

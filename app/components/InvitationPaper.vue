@@ -99,7 +99,6 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
-  animation: foil-shimmer var(--dur-shimmer) ease-in-out infinite alternate;
   pointer-events: none;
 }
 
@@ -111,13 +110,13 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
 .paper-board__foil--inner {
   inset: 4.6cqi;
   padding: max(1.5px, 0.4cqi);
-  animation-delay: -2s;
+  background-position: 50% 50%;
 }
 
 .paper-board__foil--hairline {
   inset: 6.2cqi;
   padding: 1px;
-  animation-delay: -4s;
+  background-position: 100% 50%;
 }
 
 /* ---------- Filigree ---------- */
@@ -182,17 +181,6 @@ const corners = ['tl', 'tr', 'bl', 'br'] as const
   opacity: 1;
 }
 
-@keyframes foil-shimmer {
-  from { background-position: 0% 50%; }
-  to { background-position: 100% 50%; }
-}
-
-/* Phones and touch screens: keep the foil still to save repaints */
-@media (max-width: 767px), (pointer: coarse) {
-  .paper-board__foil {
-    animation: none;
-  }
-}
 
 @media (max-width: 640px) {
   .paper-board__content {

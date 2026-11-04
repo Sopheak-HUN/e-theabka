@@ -1,104 +1,28 @@
 <script setup lang="ts">
 // Save-the-date strip: days, hours, minutes and seconds to the reception, in Khmer numerals.
 // Rendered on the server; the server's clock travels in the payload so the browser hydrates
-// the same numbers, then switches to its own clock. The numbers count up from zero when the
-// strip first scrolls into view, then every digit that changes rolls up like an odometer.
+// the same numbers, then switches to its own clock and ticks every second from page load.
+// Every digit that changes rolls up like an odometer.
 const target = new Date(wedding.start).getTime()
 const now = useState<number | null>('countdown-now', () => Date.now())
 let timer: ReturnType<typeof setInterval> | undefined
 
-// 0..1 while counting up from zero, null once the real numbers are showing
-const rampProgress = ref<number | null>(null)
-const strip = ref<HTMLElement | null>(null)
-let observer: IntersectionObserver | undefined
-let visible = false
-let counted = false
-let rampFrame = 0
-
-// Each count-up step re-renders and repaints the gold digits, so it waits until scrolling
-// pauses with the strip in view, and steps about ten times a second rather than every frame.
-const RAMP_MS = 1600
-const RAMP_STEP_MS = 100
-const SCROLL_IDLE_MS = 150
-let idleTimer: ReturnType<typeof setTimeout> | undefined
-
-function countWhenScrollSettles() {
-  clearTimeout(idleTimer)
-  idleTimer = setTimeout(() => {
-    if (!visible || counted) return
-    counted = true
-    window.removeEventListener('scroll', countWhenScrollSettles)
-    countUp()
-  }, SCROLL_IDLE_MS)
-}
-
-function countUp() {
-  const start = performance.now()
-  let lastStep = -Infinity
-  const step = (time: number) => {
-    const t = Math.min(1, (time - start) / RAMP_MS)
-    if (t === 1) {
-      rampProgress.value = null
-      rampFrame = 0
-      return
-    }
-    if (time - lastStep >= RAMP_STEP_MS) {
-      rampProgress.value = 1 - (1 - t) ** 3
-      lastStep = time
-    }
-    rampFrame = requestAnimationFrame(step)
-  }
-  rampFrame = requestAnimationFrame(step)
-}
-
 onMounted(() => {
   now.value = Date.now()
-  // Tick only while the strip is on screen; off screen there is nothing to see
   timer = setInterval(() => {
-    if (visible) now.value = Date.now()
+    now.value = Date.now()
   }, 1000)
-
-  if (!strip.value || !('IntersectionObserver' in window)) {
-    visible = true
-    return
-  }
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reduced) {
-    rampProgress.value = 0
-    window.addEventListener('scroll', countWhenScrollSettles, { passive: true })
-  } else {
-    counted = true
-  }
-
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      visible = !!entry?.isIntersecting
-      if (!visible) return
-      now.value = Date.now()
-      if (!counted) countWhenScrollSettles()
-    },
-    { threshold: 0.4 },
-  )
-  observer.observe(strip.value)
 })
-onBeforeUnmount(() => {
-  clearInterval(timer)
-  clearTimeout(idleTimer)
-  window.removeEventListener('scroll', countWhenScrollSettles)
-  observer?.disconnect()
-  cancelAnimationFrame(rampFrame)
-})
+onBeforeUnmount(() => clearInterval(timer))
 
 const units = computed(() => {
   const left = now.value === null ? null : Math.max(0, target - now.value)
   const part = (ms: number, mod: number) => (left === null ? null : Math.floor(left / ms) % mod)
-  const scale = (value: number | null) =>
-    value === null || rampProgress.value === null ? value : Math.round(value * rampProgress.value)
   return [
-    { km: 'ថ្ងៃ', en: 'days', value: scale(left === null ? null : Math.floor(left / 86_400_000)) },
-    { km: 'ម៉ោង', en: 'hours', value: scale(part(3_600_000, 24)) },
-    { km: 'នាទី', en: 'minutes', value: scale(part(60_000, 60)) },
-    { km: 'វិនាទី', en: 'seconds', value: scale(part(1000, 60)) },
+    { km: 'ថ្ងៃ', en: 'days', value: left === null ? null : Math.floor(left / 86_400_000) },
+    { km: 'ម៉ោង', en: 'hours', value: part(3_600_000, 24) },
+    { km: 'នាទី', en: 'minutes', value: part(60_000, 60) },
+    { km: 'វិនាទី', en: 'seconds', value: part(1000, 60) },
   ]
 })
 
@@ -108,7 +32,7 @@ const show = (value: number | null) => (value === null ? '··' : toKhmerDigits(
 
 <template>
   <WeddingSection id="countdown" title-km="រាប់ថ្ងៃរង់ចាំ" title-en="Counting down to our day">
-    <div ref="strip" class="countdown" :class="{ 'is-counting': rampProgress !== null }">
+    <div class="countdown">
       <div class="countdown__insert">
         <p v-if="arrived" class="countdown__arrived" lang="km">ថ្ងៃនេះជាថ្ងៃមង្គលការរបស់យើង</p>
         <ol v-else class="countdown__units" aria-live="off">
@@ -236,12 +160,6 @@ const show = (value: number | null) => (value === null ? '··' : toKhmerDigits(
 .roll-leave-to {
   translate: 0 -70%;
   opacity: 0;
-}
-
-/* While counting up from zero the digits change every frame, so each roll is quick */
-.is-counting .roll-enter-active,
-.is-counting .roll-leave-active {
-  transition-duration: 0.12s;
 }
 
 .visually-hidden {
